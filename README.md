@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# As de Québec — Remboursements
 
-## Getting Started
+Portail de remboursement de dépenses pour les entraîneurs des As de Québec AAA et des
+Chevaliers de la Seigneurie (10 équipes). Chaque entraîneur-chef coche qui était présent
+à un match ou un tournoi, le kilométrage et le per diem se calculent automatiquement, et
+le rapport (PDF + courriel) part directement de la plateforme.
 
-First, run the development server:
+Site séparé de l'appli M17 (`as-quebec-m17`) — même palette visuelle et mêmes
+plateformes (Supabase, Vercel, Resend), mais sa propre base de données : voir
+`/Users/jeangf/.claude/plans/iterative-inventing-map.md` pour le détail de cette
+décision.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 1. Créer le projet Supabase (base de données + authentification)
+
+1. Va sur https://supabase.com → **New project** (compte déjà existant pour l'appli M17).
+2. Dans **Project Settings → API**, note :
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public key` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role key` → `SUPABASE_SERVICE_ROLE_KEY` (garde-le secret)
+3. Dans **SQL Editor**, colle et exécute [`supabase/schema.sql`](supabase/schema.sql) —
+   crée les tables (équipes, arénas, entraîneurs, calendrier, tournois, réclamations,
+   hôtels, rapports) et les politiques RLS.
+4. Colle ensuite et exécute [`supabase/seed.sql`](supabase/seed.sql) — pré-remplit les
+   10 équipes, ~30 arénas, les 5 calendriers As déjà validés (157+ matchs) et les 23
+   tournois de la saison.
+5. Dans **Storage**, crée un compartiment nommé exactement `hotel-docs` (non public) —
+   les politiques RLS pour ce compartiment sont déjà dans `schema.sql`.
+6. Dans **Authentication → Providers**, « Email » doit être activé (par défaut).
+
+## 2. Variables d'environnement
+
+Copie `.env.local.example` vers `.env.local` et remplis les valeurs ci-dessus, plus :
+
+```
+RESEND_API_KEY=...            # même compte Resend que l'appli M17
+ENVOI_FROM_EMAIL=remboursements@votredomaine.com
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 3. Lancer en local
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 4. Premier compte (direction)
 
-## Learn More
+Aucun compte n'existe encore — il faut en créer un manuellement pour la première
+personne (toi) :
+1. Dans Supabase → **Authentication → Users → Add user**, crée ton compte avec ton
+   courriel (choisis « Auto Confirm User »).
+2. Dans **SQL Editor**, insère ta ligne `staff` (remplace l'id par celui de l'utilisateur
+   créé, visible dans la liste des utilisateurs) :
+   ```sql
+   insert into staff (id, full_name, email, access_role)
+   values ('<uuid-de-l-utilisateur>', 'Jean Grignon-Francke', 'jean.grignonfrancke@asdequebecaaa.com', 'direction');
+   ```
+3. Connecte-toi sur le site avec ce courriel (mot de passe défini lors de la création du
+   compte, ou utilise « Reset password » depuis Supabase).
+4. Une fois connecté, utilise **Direction → Inviter un entraîneur** pour inviter les 9
+   autres — voir `scripts/roster-prevu.json` pour le rattachement équipe(s)/rôle prévu de
+   chacun (les courriels réels restent à obtenir).
 
-To learn more about Next.js, take a look at the following resources:
+## 5. Déploiement
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Connecte le dépôt GitHub à un nouveau projet Vercel (détection Next.js automatique),
+ajoute les mêmes variables d'environnement dans **Project Settings → Environment
+Variables**, puis déploie.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Développement
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/lib/calc.ts` — toutes les règles de remboursement (kilométrage, franchise,
+  autocar, per diem, journées de tournoi). Vérifié par `npx tsx src/lib/calc.test.ts`.
+- `src/lib/rapports.ts` — construit les tableaux d'un rapport ; une seule définition,
+  utilisée par l'écran, le PDF et le courriel.
+- `src/lib/pdf.ts` — génération du PDF (jsPDF + jspdf-autotable, côté serveur).
+- `src/app/api/envoyer` — génère le PDF et l'envoie par Resend (pièce jointe).
+- `src/app/api/inviter` — invite un entraîneur (Supabase Auth) et crée ses rattachements
+  d'équipe.

@@ -1,0 +1,149 @@
+[
+ {
+  "nom": "Jean Grignon-Francke",
+  "access_role": "direction",
+  "memberships": [
+   {
+    "team": "M17 AAA",
+    "team_id": "m17aaa",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "jean.grignonfrancke@asdequebecaaa.com"
+ },
+ {
+  "nom": "JP Côté",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M15 AAA Élite",
+    "team_id": "m15aaae",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Olivier Simoneau-Paquet",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M15 AAA",
+    "team_id": "m15aaa",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Rafael Massé",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M13 AAA Élite",
+    "team_id": "m13aaae",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Serge Alain",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M13 AAA",
+    "team_id": "m13aaa",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Renaud Blais",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M18 D1",
+    "team_id": "m18d1",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   },
+   {
+    "team": "M18 D2",
+    "team_id": "m18d2",
+    "titre": "superviseur",
+    "portee": "superviseur"
+   },
+   {
+    "team": "M15 D1R",
+    "team_id": "m15d1r",
+    "titre": "superviseur",
+    "portee": "superviseur"
+   },
+   {
+    "team": "M15 D3",
+    "team_id": "m15d3",
+    "titre": "superviseur",
+    "portee": "superviseur"
+   },
+   {
+    "team": "M13 D1R",
+    "team_id": "m13d1r",
+    "titre": "superviseur",
+    "portee": "superviseur"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Félix Devost",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M18 D2",
+    "team_id": "m18d2",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   },
+   {
+    "team": "M15 D1R",
+    "team_id": "m15d1r",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Gabriel Bossé",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M15 D3",
+    "team_id": "m15d3",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ },
+ {
+  "nom": "Jérémy Ste-Marie",
+  "access_role": "coach",
+  "memberships": [
+   {
+    "team": "M13 D1R",
+    "team_id": "m13d1r",
+    "titre": "Ent. chef",
+    "portee": "titulaire"
+   }
+  ],
+  "email": "À DEMANDER À JEAN"
+ }
+]

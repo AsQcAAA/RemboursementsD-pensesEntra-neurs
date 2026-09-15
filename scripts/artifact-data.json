@@ -1,0 +1,2906 @@
+{
+ "venues": {
+  "duberger": {
+   "id": "duberger",
+   "nom": "Aréna Duberger",
+   "ville": "Québec",
+   "km": 0.0,
+   "min": 0,
+   "domicile": true,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "marc-simoneau": {
+   "id": "marc-simoneau",
+   "nom": "Centre sportif Marc-Simoneau",
+   "ville": "Québec",
+   "km": 10.4,
+   "min": 12,
+   "domicile": true,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "guy-lafleur": {
+   "id": "guy-lafleur",
+   "nom": "Pavillon Guy-Lafleur",
+   "ville": "Québec",
+   "km": 7.9,
+   "min": 11,
+   "domicile": true,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "gaetan-duchesne": {
+   "id": "gaetan-duchesne",
+   "nom": "Aréna Gaétan-Duchesne",
+   "ville": "Québec",
+   "km": 3.0,
+   "min": 6,
+   "domicile": true,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "bonair": {
+   "id": "bonair",
+   "nom": "Complexe sportif Bonair",
+   "ville": "L'Ancienne-Lorette",
+   "km": 11.5,
+   "min": 15,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "horizon-ssf": {
+   "id": "horizon-ssf",
+   "nom": "Complexe Horizon Santé-SSF",
+   "ville": "Saint-Augustin-de-Desmaures",
+   "km": 15.4,
+   "min": 18,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "st-augustin": {
+   "id": "st-augustin",
+   "nom": "Complexe sportif de Saint-Augustin",
+   "ville": "Saint-Augustin-de-Desmaures",
+   "km": 21.2,
+   "min": 20,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "bruno-verret": {
+   "id": "bruno-verret",
+   "nom": "Centre Bruno-Verret",
+   "ville": "Lévis",
+   "km": 28.8,
+   "min": 28,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 0.0,
+   "perDiem": false
+  },
+  "st-isidore": {
+   "id": "st-isidore",
+   "nom": "Aréna St-Isidore",
+   "ville": "Saint-Isidore",
+   "km": 43.3,
+   "min": 35,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 6.6,
+   "perDiem": true
+  },
+  "frameco": {
+   "id": "frameco",
+   "nom": "Centre Frameco",
+   "ville": "Saint-Joseph-de-Beauce",
+   "km": 72.7,
+   "min": 57,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 65.4,
+   "perDiem": true
+  },
+  "jean-guy-talbot": {
+   "id": "jean-guy-talbot",
+   "nom": "Colisée Jean-Guy Talbot",
+   "ville": "Trois-Rivières",
+   "km": 125.3,
+   "min": 80,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 170.6,
+   "perDiem": true
+  },
+  "videotron-tr": {
+   "id": "videotron-tr",
+   "nom": "Colisée Vidéotron",
+   "ville": "Trois-Rivières",
+   "km": 131.1,
+   "min": 83,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 182.2,
+   "perDiem": true
+  },
+  "clermont": {
+   "id": "clermont",
+   "nom": "Aréna de Clermont",
+   "ville": "Clermont",
+   "km": 141.5,
+   "min": 100,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 203.0,
+   "perDiem": true
+  },
+  "kingsey-falls": {
+   "id": "kingsey-falls",
+   "nom": "Centre récréatif Norman-Boisvert",
+   "ville": "Kingsey Falls",
+   "km": 143.9,
+   "min": 98,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 207.8,
+   "perDiem": true
+  },
+  "st-hyacinthe": {
+   "id": "st-hyacinthe",
+   "nom": "Stade L.-P. Gaucher",
+   "ville": "Saint-Hyacinthe",
+   "km": 194.2,
+   "min": 130,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "riviere-du-loup": {
+   "id": "riviere-du-loup",
+   "nom": "Stade de la Cité des Jeunes",
+   "ville": "Rivière-du-Loup",
+   "km": 208.4,
+   "min": 130,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "jonquiere": {
+   "id": "jonquiere",
+   "nom": "Foyer des loisirs et de la culture",
+   "ville": "Jonquière",
+   "km": 213.5,
+   "min": 136,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "mt-st-hilaire": {
+   "id": "mt-st-hilaire",
+   "nom": "Complexe Sportif Sportscene",
+   "ville": "Mont-Saint-Hilaire",
+   "km": 217.1,
+   "min": 140,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "st-bruno-lac": {
+   "id": "st-bruno-lac",
+   "nom": "Aréna Samuel-Gagnon",
+   "ville": "Saint-Bruno (Lac-St-Jean)",
+   "km": 219.7,
+   "min": 143,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "la-baie": {
+   "id": "la-baie",
+   "nom": "Centre des sports Jean-Claude-Tremblay",
+   "ville": "La Baie",
+   "km": 220.7,
+   "min": 140,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "st-fabien": {
+   "id": "st-fabien",
+   "nom": "Pavillon des loisirs de St-Fabien",
+   "ville": "Saint-Fabien",
+   "km": 281.3,
+   "min": 175,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "henri-desjardins": {
+   "id": "henri-desjardins",
+   "nom": "Centre Henri-Desjardins",
+   "ville": "Baie-Comeau",
+   "km": 410.6,
+   "min": 285,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "alcoa": {
+   "id": "alcoa",
+   "nom": "Centre sportif Alcoa",
+   "ville": "Baie-Comeau",
+   "km": 419.4,
+   "min": 290,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "st-hubert": {
+   "id": "st-hubert",
+   "nom": "Aréna de Saint-Hubert",
+   "ville": "Saint-Hubert",
+   "km": 241.0,
+   "min": 186,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "st-georges": {
+   "id": "st-georges",
+   "nom": "Aréna de Saint-Georges",
+   "ville": "Saint-Georges",
+   "km": 102.6,
+   "min": 83,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 125.2,
+   "perDiem": true
+  },
+  "mont-ste-anne": {
+   "id": "mont-ste-anne",
+   "nom": "Aréna du Mont-Sainte-Anne",
+   "ville": "Beaupré",
+   "km": 44.2,
+   "min": 42,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 8.4,
+   "perDiem": true
+  },
+  "beauceville": {
+   "id": "beauceville",
+   "nom": "Aréna de Beauceville",
+   "ville": "Beauceville",
+   "km": 88.0,
+   "min": 71,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 96.0,
+   "perDiem": true
+  },
+  "chicoutimi": {
+   "id": "chicoutimi",
+   "nom": "Aréna de Chicoutimi",
+   "ville": "Chicoutimi",
+   "km": 211.5,
+   "min": 169,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "drummondville": {
+   "id": "drummondville",
+   "nom": "Olympia Yvan-Cournoyer",
+   "ville": "Drummondville",
+   "km": 149.9,
+   "min": 119,
+   "domicile": false,
+   "autocar": false,
+   "kmFact": 219.8,
+   "perDiem": true
+  },
+  "boucherville": {
+   "id": "boucherville",
+   "nom": "Aréna de Boucherville",
+   "ville": "Boucherville",
+   "km": 239.9,
+   "min": 184,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "rimouski": {
+   "id": "rimouski",
+   "nom": "Colisée Financière Sun Life",
+   "ville": "Rimouski",
+   "km": 312.7,
+   "min": 249,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  },
+  "cabano": {
+   "id": "cabano",
+   "nom": "Aréna Cascade-Cabano",
+   "ville": "Témiscouata-sur-le-Lac",
+   "km": 260.1,
+   "min": 198,
+   "domicile": false,
+   "autocar": true,
+   "kmFact": 0.0,
+   "perDiem": true
+  }
+ },
+ "teams": [
+  {
+   "id": "m17aaa",
+   "nom": "M17 AAA",
+   "org": "As",
+   "chef": "jean",
+   "staff": [
+    [
+     "jean",
+     "Jean Grignon-Francke",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "jeff",
+     "Jeff St-Louis",
+     "Ent. adjoint",
+     "mardi-mercredi"
+    ],
+    [
+     "philippe",
+     "Philippe Tremblay",
+     "Ent. adjoint",
+     "mercredi-jeudi"
+    ]
+   ]
+  },
+  {
+   "id": "m15aaae",
+   "nom": "M15 AAA Élite",
+   "org": "As",
+   "chef": "jpcote",
+   "staff": [
+    [
+     "jpcote",
+     "JP Côté",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "yannick",
+     "Yannick Lamontagne",
+     "Ent. adjoint",
+     ""
+    ],
+    [
+     "thomas",
+     "Thomas Roberge",
+     "Ent. adjoint",
+     "mardi-mercredi-jeudi"
+    ],
+    [
+     "rafael",
+     "Rafael Massé",
+     "Ent. adjoint",
+     "mardi-mercredi-jeudi"
+    ]
+   ]
+  },
+  {
+   "id": "m15aaa",
+   "nom": "M15 AAA",
+   "org": "As",
+   "chef": "olivier",
+   "staff": [
+    [
+     "olivier",
+     "Olivier Simoneau-Paquet",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "philippe",
+     "Philippe Tremblay",
+     "Ent. adjoint",
+     "mardi-mercredi-jeudi"
+    ],
+    [
+     "alexis",
+     "Alexis Houle",
+     "Ent. adjoint",
+     "mercredi-jeudi"
+    ]
+   ]
+  },
+  {
+   "id": "m13aaae",
+   "nom": "M13 AAA Élite",
+   "org": "As",
+   "chef": "rafael",
+   "staff": [
+    [
+     "rafael",
+     "Rafael Massé",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "jeremy",
+     "Jérémy Ste-Marie",
+     "Ent. adjoint",
+     "mardi-mercredi-jeudi"
+    ],
+    [
+     "mathis",
+     "Mathis Bergeron",
+     "Ent. adjoint",
+     "mardi-mercredi-jeudi"
+    ]
+   ]
+  },
+  {
+   "id": "m13aaa",
+   "nom": "M13 AAA",
+   "org": "As",
+   "chef": "serge",
+   "staff": [
+    [
+     "serge",
+     "Serge Alain",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "gabrielj",
+     "Gabriel Jackson",
+     "Ent. adjoint",
+     ""
+    ],
+    [
+     "alexis",
+     "Alexis Houle",
+     "Ent. adjoint",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "m18d1",
+   "nom": "M18 D1",
+   "org": "Chevaliers",
+   "chef": "renaud",
+   "staff": [
+    [
+     "renaud",
+     "Renaud Blais",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "olivier",
+     "Olivier Simoneau-Paquet",
+     "Ent. adjoint",
+     ""
+    ],
+    [
+     "samuel",
+     "Samuel Poirier",
+     "Ent. adjoint",
+     "mardi-mercredi"
+    ]
+   ]
+  },
+  {
+   "id": "m18d2",
+   "nom": "M18 D2",
+   "org": "Chevaliers",
+   "chef": "felix",
+   "staff": [
+    [
+     "felix",
+     "Félix Devost",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "pascal",
+     "Pascal Lévesque",
+     "Ent. adjoint",
+     "mercredi-jeudi"
+    ],
+    [
+     "anthony",
+     "Anthony Hamelin",
+     "Ent. adjoint",
+     "mardi-mercredi"
+    ],
+    [
+     "olivier",
+     "Olivier Simoneau-Paquet",
+     "Ent. M18 Sport-études",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "m15d1r",
+   "nom": "M15 D1R",
+   "org": "Chevaliers",
+   "chef": "felix",
+   "staff": [
+    [
+     "felix",
+     "Félix Devost",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "oguilbert",
+     "Olivier Guilbert",
+     "Ent. adjoint",
+     "mercredi-jeudi-vendredi"
+    ],
+    [
+     "romain",
+     "Romain Gagnon",
+     "Ent. adjoint",
+     "mardi-mercredi-vendredi"
+    ],
+    [
+     "elliot",
+     "Elliot Rouleau",
+     "Ent. extra",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "m15d3",
+   "nom": "M15 D3",
+   "org": "Chevaliers",
+   "chef": "gabrielb",
+   "staff": [
+    [
+     "gabrielb",
+     "Gabriel Bossé",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "bryan",
+     "Bryan Cloutier",
+     "Ent. adjoint",
+     ""
+    ],
+    [
+     "malick",
+     "Malick Drolet",
+     "Ent. extra",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "m13d1r",
+   "nom": "M13 D1R",
+   "org": "Chevaliers",
+   "chef": "jeremy",
+   "staff": [
+    [
+     "jeremy",
+     "Jérémy Ste-Marie",
+     "Ent. chef",
+     ""
+    ],
+    [
+     "sylvain",
+     "Sylvain Ste-Marie",
+     "Ent. adjoint",
+     "dispo jeudi-vendredi"
+    ],
+    [
+     "mathias",
+     "Mathias St-Laurent",
+     "Ent. adjoint",
+     ""
+    ]
+   ]
+  }
+ ],
+ "accounts": [
+  {
+   "id": "jean",
+   "nom": "Jean Grignon-Francke",
+   "nip": "1701",
+   "equipes": [
+    "m17aaa"
+   ],
+   "admin": true
+  },
+  {
+   "id": "jpcote",
+   "nom": "JP Côté",
+   "nip": "1502",
+   "equipes": [
+    "m15aaae"
+   ],
+   "admin": false
+  },
+  {
+   "id": "olivier",
+   "nom": "Olivier Simoneau-Paquet",
+   "nip": "1503",
+   "equipes": [
+    "m15aaa"
+   ],
+   "admin": false
+  },
+  {
+   "id": "rafael",
+   "nom": "Rafael Massé",
+   "nip": "1301",
+   "equipes": [
+    "m13aaae"
+   ],
+   "admin": false
+  },
+  {
+   "id": "serge",
+   "nom": "Serge Alain",
+   "nip": "1302",
+   "equipes": [
+    "m13aaa"
+   ],
+   "admin": false
+  },
+  {
+   "id": "renaud",
+   "nom": "Renaud Blais",
+   "nip": "1801",
+   "equipes": [
+    "m18d1"
+   ],
+   "admin": false,
+   "superviseur": [
+    "m18d1",
+    "m18d2",
+    "m15d1r",
+    "m15d3",
+    "m13d1r"
+   ],
+   "titre": "Superviseur — Chevaliers de la Seigneurie"
+  },
+  {
+   "id": "felix",
+   "nom": "Félix Devost",
+   "nip": "1802",
+   "equipes": [
+    "m18d2",
+    "m15d1r"
+   ],
+   "admin": false
+  },
+  {
+   "id": "gabrielb",
+   "nom": "Gabriel Bossé",
+   "nip": "1504",
+   "equipes": [
+    "m15d3"
+   ],
+   "admin": false
+  },
+  {
+   "id": "jeremy",
+   "nom": "Jérémy Ste-Marie",
+   "nip": "1303",
+   "equipes": [
+    "m13d1r"
+   ],
+   "admin": false
+  }
+ ],
+ "games": {
+  "m17aaa": [
+   {
+    "id": "m17aaa-HC-2026-08-30",
+    "date": "2026-08-30",
+    "heure": "",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "HC",
+    "hc": true,
+    "voiture": true
+   },
+   {
+    "id": "m17aaa-5084-2026-09-12",
+    "date": "2026-09-12",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "5084",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5086-2026-09-13",
+    "date": "2026-09-13",
+    "heure": "17:30",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "5086",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5087-2026-09-26",
+    "date": "2026-09-26",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "5087",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5088-2026-10-03",
+    "date": "2026-10-03",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "5088",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5089-2026-10-10",
+    "date": "2026-10-10",
+    "heure": "17:30",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "5089",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5114-2026-10-11",
+    "date": "2026-10-11",
+    "heure": "16:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "5114",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5090-2026-10-17",
+    "date": "2026-10-17",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "5090",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5321-2026-10-24",
+    "date": "2026-10-24",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "5321",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5051-2026-10-31",
+    "date": "2026-10-31",
+    "heure": "16:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "5051",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5020-2026-11-01",
+    "date": "2026-11-01",
+    "heure": "15:30",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "5020",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5091-2026-11-14",
+    "date": "2026-11-14",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "5091",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5117-2026-11-18",
+    "date": "2026-11-18",
+    "heure": "14:00",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "5117",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5092-2026-11-21",
+    "date": "2026-11-21",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "5092",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5093-2026-11-28",
+    "date": "2026-11-28",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Piché",
+    "dom": true,
+    "num": "5093",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5038-2026-12-05",
+    "date": "2026-12-05",
+    "heure": "16:00",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "5038",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5039-2026-12-06",
+    "date": "2026-12-06",
+    "heure": "13:00",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "5039",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5326-2026-12-12",
+    "date": "2026-12-12",
+    "heure": "16:30",
+    "venue": "st-isidore",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "5326",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5208-2027-01-09",
+    "date": "2027-01-09",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Dynamiques CCL",
+    "dom": true,
+    "num": "5208",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5209-2027-01-10",
+    "date": "2027-01-10",
+    "heure": "16:00",
+    "venue": "guy-lafleur",
+    "adv": "Harfangs Sherbrooke",
+    "dom": true,
+    "num": "5209",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5094-2027-01-16",
+    "date": "2027-01-16",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "5094",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5317-2027-01-17",
+    "date": "2027-01-17",
+    "heure": "15:00",
+    "venue": "kingsey-falls",
+    "adv": "Piché",
+    "dom": false,
+    "num": "5317",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5318-2027-01-21",
+    "date": "2027-01-21",
+    "heure": "10:00",
+    "venue": "kingsey-falls",
+    "adv": "Piché",
+    "dom": false,
+    "num": "5318",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5122-2027-01-24",
+    "date": "2027-01-24",
+    "heure": "16:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "5122",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5210-2027-01-30",
+    "date": "2027-01-30",
+    "heure": "14:00",
+    "venue": "cabano",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "5210",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5306-2027-01-31",
+    "date": "2027-01-31",
+    "heure": "14:30",
+    "venue": "videotron-tr",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "5306",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5095-2027-02-13",
+    "date": "2027-02-13",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "5095",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5036-2027-02-14",
+    "date": "2027-02-14",
+    "heure": "12:30",
+    "venue": "videotron-tr",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "5036",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5211-2027-02-20",
+    "date": "2027-02-20",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Gaulois Richelieu",
+    "dom": true,
+    "num": "5211",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5059-2027-02-27",
+    "date": "2027-02-27",
+    "heure": "16:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "5059",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5096-2027-03-13",
+    "date": "2027-03-13",
+    "heure": "19:00",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "5096",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5214-2027-03-20",
+    "date": "2027-03-20",
+    "heure": "",
+    "venue": "riviere-du-loup",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "5214",
+    "hc": false
+   },
+   {
+    "id": "m17aaa-5109-2027-03-21",
+    "date": "2027-03-21",
+    "heure": "16:00",
+    "venue": "frameco",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "5109",
+    "hc": false
+   }
+  ],
+  "m15aaae": [
+   {
+    "id": "m15aaae-HC-2026-08-30",
+    "date": "2026-08-30",
+    "heure": "",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "HC",
+    "hc": true,
+    "voiture": true
+   },
+   {
+    "id": "m15aaae-4051-2026-09-12",
+    "date": "2026-09-12",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "4051",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4052-2026-09-13",
+    "date": "2026-09-13",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "4052",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4035-2026-09-19",
+    "date": "2026-09-19",
+    "heure": "17:00",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "4035",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4053-2026-09-26",
+    "date": "2026-09-26",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "4053",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4054-2026-09-27",
+    "date": "2026-09-27",
+    "heure": "13:30",
+    "venue": "clermont",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "4054",
+    "hc": false,
+    "recu": true
+   },
+   {
+    "id": "m15aaae-4055-2026-10-03",
+    "date": "2026-10-03",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "4055",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4056-2026-10-10",
+    "date": "2026-10-10",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "4056",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4082-2026-10-11",
+    "date": "2026-10-11",
+    "heure": "14:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "4082",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4319-2026-10-18",
+    "date": "2026-10-18",
+    "heure": "17:00",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "4319",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4085-2026-10-21",
+    "date": "2026-10-21",
+    "heure": "09:15",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "4085",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4039-2026-10-31",
+    "date": "2026-10-31",
+    "heure": "14:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "4039",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4025-2026-11-01",
+    "date": "2026-11-01",
+    "heure": "13:30",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "4025",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4026-2026-11-07",
+    "date": "2026-11-07",
+    "heure": "13:30",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "4026",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4057-2026-11-14",
+    "date": "2026-11-14",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "4057",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4058-2026-11-28",
+    "date": "2026-11-28",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Cascades Élite",
+    "dom": true,
+    "num": "4058",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4059-2026-11-29",
+    "date": "2026-11-29",
+    "heure": "13:30",
+    "venue": "guy-lafleur",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "4059",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4027-2026-12-06",
+    "date": "2026-12-06",
+    "heure": "13:00",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "4027",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4338-2026-12-12",
+    "date": "2026-12-12",
+    "heure": "14:30",
+    "venue": "st-isidore",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "4338",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4060-2026-12-19",
+    "date": "2026-12-19",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "4060",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4197-2027-01-09",
+    "date": "2027-01-09",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Vert & Noir de l'École Fadette",
+    "dom": true,
+    "num": "4197",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4061-2027-01-23",
+    "date": "2027-01-23",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "4061",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4325-2027-01-24",
+    "date": "2027-01-24",
+    "heure": "14:00",
+    "venue": "videotron-tr",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "4325",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4199-2027-01-30",
+    "date": "2027-01-30",
+    "heure": "12:00",
+    "venue": "cabano",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "4199",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4326-2027-01-31",
+    "date": "2027-01-31",
+    "heure": "12:30",
+    "venue": "videotron-tr",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "4326",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4062-2027-02-07",
+    "date": "2027-02-07",
+    "heure": "13:30",
+    "venue": "guy-lafleur",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "4062",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4063-2027-02-25",
+    "date": "2027-02-25",
+    "heure": "09:00",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "4063",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4046-2027-02-27",
+    "date": "2027-02-27",
+    "heure": "14:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "4046",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4064-2027-03-13",
+    "date": "2027-03-13",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "4064",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4203-2027-03-20",
+    "date": "2027-03-20",
+    "heure": "",
+    "venue": "riviere-du-loup",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "4203",
+    "hc": false
+   },
+   {
+    "id": "m15aaae-4078-2027-03-21",
+    "date": "2027-03-21",
+    "heure": "14:00",
+    "venue": "frameco",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "4078",
+    "hc": false
+   }
+  ],
+  "m15aaa": [
+   {
+    "id": "m15aaa-HC-2026-08-30",
+    "date": "2026-08-30",
+    "heure": "",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "HC",
+    "hc": true,
+    "voiture": true
+   },
+   {
+    "id": "m15aaa-3064-2026-09-12",
+    "date": "2026-09-12",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "3064",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3065-2026-09-13",
+    "date": "2026-09-13",
+    "heure": "14:00",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "3065",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3066-2026-09-19",
+    "date": "2026-09-19",
+    "heure": "19:30",
+    "venue": "gaetan-duchesne",
+    "adv": "Nord-Côtiers",
+    "dom": true,
+    "num": "3066",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3067-2026-09-20",
+    "date": "2026-09-20",
+    "heure": "13:30",
+    "venue": "guy-lafleur",
+    "adv": "Nord-Côtiers",
+    "dom": true,
+    "num": "3067",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3068-2026-09-26",
+    "date": "2026-09-26",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Albatros Est-du-Québec",
+    "dom": true,
+    "num": "3068",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3069-2026-09-27",
+    "date": "2026-09-27",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "3069",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3070-2026-10-03",
+    "date": "2026-10-03",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "3070",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3037-2026-10-08",
+    "date": "2026-10-08",
+    "heure": "14:45",
+    "venue": "horizon-ssf",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "3037",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3096-2026-10-11",
+    "date": "2026-10-11",
+    "heure": "13:00",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "3096",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3144-2026-10-17",
+    "date": "2026-10-17",
+    "heure": "14:00",
+    "venue": "st-hyacinthe",
+    "adv": "Vert & Noir de l'École Fadette",
+    "dom": false,
+    "num": "3144",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3223-2026-10-18",
+    "date": "2026-10-18",
+    "heure": "15:30",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "3223",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3099-2026-10-28",
+    "date": "2026-10-28",
+    "heure": "09:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "3099",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3040-2026-10-31",
+    "date": "2026-10-31",
+    "heure": "15:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "3040",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3022-2026-11-01",
+    "date": "2026-11-01",
+    "heure": "13:00",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "3022",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3071-2026-11-07",
+    "date": "2026-11-07",
+    "heure": "18:30",
+    "venue": "marc-simoneau",
+    "adv": "Albatros Est-du-Québec",
+    "dom": true,
+    "num": "3071",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3072-2026-11-28",
+    "date": "2026-11-28",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Cascades Élite",
+    "dom": true,
+    "num": "3072",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3023-2026-12-05",
+    "date": "2026-12-05",
+    "heure": "14:30",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "3023",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3085-2026-12-12",
+    "date": "2026-12-12",
+    "heure": "13:00",
+    "venue": "st-isidore",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "3085",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3228-2026-12-13",
+    "date": "2026-12-13",
+    "heure": "15:30",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "3228",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3073-2027-01-09",
+    "date": "2027-01-09",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "3073",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3010-2027-01-10",
+    "date": "2027-01-10",
+    "heure": "14:00",
+    "venue": "st-fabien",
+    "adv": "Albatros Est-du-Québec",
+    "dom": false,
+    "num": "3010",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3074-2027-01-16",
+    "date": "2027-01-16",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "3074",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3354-2027-01-17",
+    "date": "2027-01-17",
+    "heure": "13:00",
+    "venue": "kingsey-falls",
+    "adv": "Cascades Élite",
+    "dom": false,
+    "num": "3354",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3075-2027-02-03",
+    "date": "2027-02-03",
+    "heure": "09:30",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "3075",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3076-2027-02-06",
+    "date": "2027-02-06",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "3076",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3061-2027-02-27",
+    "date": "2027-02-27",
+    "heure": "19:30",
+    "venue": "henri-desjardins",
+    "adv": "Nord-Côtiers",
+    "dom": false,
+    "num": "3061",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3062-2027-02-28",
+    "date": "2027-02-28",
+    "heure": "10:30",
+    "venue": "alcoa",
+    "adv": "Nord-Côtiers",
+    "dom": false,
+    "num": "3062",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3077-2027-03-13",
+    "date": "2027-03-13",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "3077",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3078-2027-03-20",
+    "date": "2027-03-20",
+    "heure": "18:30",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "3078",
+    "hc": false
+   },
+   {
+    "id": "m15aaa-3092-2027-03-21",
+    "date": "2027-03-21",
+    "heure": "12:30",
+    "venue": "frameco",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "3092",
+    "hc": false
+   }
+  ],
+  "m13aaae": [
+   {
+    "id": "m13aaae-HC-2026-08-30",
+    "date": "2026-08-30",
+    "heure": "",
+    "venue": "st-bruno-lac",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "HC",
+    "hc": true,
+    "voiture": true
+   },
+   {
+    "id": "m13aaae-2049-2026-09-12",
+    "date": "2026-09-12",
+    "heure": "14:00",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "2049",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2327-2026-09-19",
+    "date": "2026-09-19",
+    "heure": "15:30",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "2327",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2050-2026-09-26",
+    "date": "2026-09-26",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "2050",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2051-2026-10-03",
+    "date": "2026-10-03",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "2051",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2080-2026-10-11",
+    "date": "2026-10-11",
+    "heure": "11:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "2080",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2151-2026-10-18",
+    "date": "2026-10-18",
+    "heure": "14:00",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "2151",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2120-2026-10-25",
+    "date": "2026-10-25",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Vert & Noir de l'École Fadette",
+    "dom": true,
+    "num": "2120",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2037-2026-10-31",
+    "date": "2026-10-31",
+    "heure": "13:00",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "2037",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2025-2026-11-01",
+    "date": "2026-11-01",
+    "heure": "14:30",
+    "venue": "st-bruno-lac",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "2025",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2052-2026-11-07",
+    "date": "2026-11-07",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "2052",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2007-2026-11-08",
+    "date": "2026-11-08",
+    "heure": "12:00",
+    "venue": "st-fabien",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "2007",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2053-2026-11-21",
+    "date": "2026-11-21",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "2053",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2054-2026-11-22",
+    "date": "2026-11-22",
+    "heure": "13:30",
+    "venue": "guy-lafleur",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "2054",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2055-2026-11-28",
+    "date": "2026-11-28",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Cascades Élite",
+    "dom": true,
+    "num": "2055",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2056-2026-11-29",
+    "date": "2026-11-29",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "2056",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2026-2026-12-06",
+    "date": "2026-12-06",
+    "heure": "15:00",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "2026",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2070-2026-12-12",
+    "date": "2026-12-12",
+    "heure": "11:30",
+    "venue": "st-isidore",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "2070",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2192-2026-12-13",
+    "date": "2026-12-13",
+    "heure": "14:00",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "2192",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2027-2026-12-19",
+    "date": "2026-12-19",
+    "heure": "13:00",
+    "venue": "jonquiere",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "2027",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2012-2027-01-10",
+    "date": "2027-01-10",
+    "heure": "12:30",
+    "venue": "st-fabien",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "2012",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2088-2027-01-14",
+    "date": "2027-01-14",
+    "heure": "14:00",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "2088",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2057-2027-01-16",
+    "date": "2027-01-16",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "2057",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2215-2027-01-24",
+    "date": "2027-01-24",
+    "heure": "12:30",
+    "venue": "videotron-tr",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "2215",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2058-2027-02-06",
+    "date": "2027-02-06",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "2058",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2059-2027-02-07",
+    "date": "2027-02-07",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "2059",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2060-2027-02-24",
+    "date": "2027-02-24",
+    "heure": "15:00",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "2060",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2045-2027-02-27",
+    "date": "2027-02-27",
+    "heure": "13:00",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "2045",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2061-2027-03-13",
+    "date": "2027-03-13",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "2061",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2062-2027-03-20",
+    "date": "2027-03-20",
+    "heure": "17:00",
+    "venue": "marc-simoneau",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "2062",
+    "hc": false
+   },
+   {
+    "id": "m13aaae-2076-2027-03-21",
+    "date": "2027-03-21",
+    "heure": "11:00",
+    "venue": "frameco",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "2076",
+    "hc": false
+   }
+  ],
+  "m13aaa": [
+   {
+    "id": "m13aaa-HC-2026-08-30",
+    "date": "2026-08-30",
+    "heure": "",
+    "venue": "st-bruno-lac",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "HC",
+    "hc": true,
+    "voiture": true
+   },
+   {
+    "id": "m13aaa-1066-2026-09-12",
+    "date": "2026-09-12",
+    "heure": "12:30",
+    "venue": "marc-simoneau",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "1066",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1067-2026-09-19",
+    "date": "2026-09-19",
+    "heure": "18:00",
+    "venue": "gaetan-duchesne",
+    "adv": "Nord-Côtiers",
+    "dom": true,
+    "num": "1067",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1068-2026-09-20",
+    "date": "2026-09-20",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Nord-Côtiers",
+    "dom": true,
+    "num": "1068",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1069-2026-09-26",
+    "date": "2026-09-26",
+    "heure": "15:30",
+    "venue": "guy-lafleur",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "1069",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1070-2026-10-03",
+    "date": "2026-10-03",
+    "heure": "15:30",
+    "venue": "guy-lafleur",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "1070",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1098-2026-10-11",
+    "date": "2026-10-11",
+    "heure": "10:00",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "1098",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1118-2026-10-18",
+    "date": "2026-10-18",
+    "heure": "12:30",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "1118",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1041-2026-10-31",
+    "date": "2026-10-31",
+    "heure": "14:00",
+    "venue": "st-augustin",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "1041",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1020-2026-11-01",
+    "date": "2026-11-01",
+    "heure": "13:00",
+    "venue": "st-bruno-lac",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "1020",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1071-2026-11-05",
+    "date": "2026-11-05",
+    "heure": "18:00",
+    "venue": "guy-lafleur",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": true,
+    "num": "1071",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1072-2026-11-07",
+    "date": "2026-11-07",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Albatros",
+    "dom": true,
+    "num": "1072",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1073-2026-11-14",
+    "date": "2026-11-14",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": true,
+    "num": "1073",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1074-2026-11-21",
+    "date": "2026-11-21",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Cascades Élite",
+    "dom": true,
+    "num": "1074",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1075-2026-11-22",
+    "date": "2026-11-22",
+    "heure": "12:00",
+    "venue": "guy-lafleur",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "1075",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1027-2026-12-05",
+    "date": "2026-12-05",
+    "heure": "13:00",
+    "venue": "la-baie",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": false,
+    "num": "1027",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1362-2026-12-12",
+    "date": "2026-12-12",
+    "heure": "10:00",
+    "venue": "st-isidore",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "1362",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1124-2026-12-13",
+    "date": "2026-12-13",
+    "heure": "12:30",
+    "venue": "jean-guy-talbot",
+    "adv": "Estacades Mauricie",
+    "dom": false,
+    "num": "1124",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1076-2027-01-09",
+    "date": "2027-01-09",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "1076",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1011-2027-01-10",
+    "date": "2027-01-10",
+    "heure": "11:00",
+    "venue": "st-fabien",
+    "adv": "Albatros",
+    "dom": false,
+    "num": "1011",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1077-2027-01-16",
+    "date": "2027-01-16",
+    "heure": "14:00",
+    "venue": "guy-lafleur",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "1077",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1199-2027-01-17",
+    "date": "2027-01-17",
+    "heure": "11:30",
+    "venue": "kingsey-falls",
+    "adv": "Cascades Élite",
+    "dom": false,
+    "num": "1199",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1078-2027-01-23",
+    "date": "2027-01-23",
+    "heure": "15:30",
+    "venue": "marc-simoneau",
+    "adv": "Espoir Saguenay Lac-St-Jean",
+    "dom": true,
+    "num": "1078",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1079-2027-01-28",
+    "date": "2027-01-28",
+    "heure": "18:00",
+    "venue": "guy-lafleur",
+    "adv": "Blizzard SSF",
+    "dom": true,
+    "num": "1079",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1105-2027-01-30",
+    "date": "2027-01-30",
+    "heure": "18:30",
+    "venue": "bruno-verret",
+    "adv": "Corsaires Pointe-Lévy",
+    "dom": false,
+    "num": "1105",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1213-2027-02-13",
+    "date": "2027-02-13",
+    "heure": "13:30",
+    "venue": "mt-st-hilaire",
+    "adv": "Vert & Noir de l'École Fadette",
+    "dom": false,
+    "num": "1213",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1047-2027-02-24",
+    "date": "2027-02-24",
+    "heure": "19:00",
+    "venue": "bonair",
+    "adv": "Blizzard SSF",
+    "dom": false,
+    "num": "1047",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1063-2027-02-27",
+    "date": "2027-02-27",
+    "heure": "18:00",
+    "venue": "henri-desjardins",
+    "adv": "Nord-Côtiers",
+    "dom": false,
+    "num": "1063",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1064-2027-02-28",
+    "date": "2027-02-28",
+    "heure": "09:00",
+    "venue": "henri-desjardins",
+    "adv": "Nord-Côtiers",
+    "dom": false,
+    "num": "1064",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1080-2027-03-13",
+    "date": "2027-03-13",
+    "heure": "15:30",
+    "venue": "guy-lafleur",
+    "adv": "Estacades Mauricie",
+    "dom": true,
+    "num": "1080",
+    "hc": false
+   },
+   {
+    "id": "m13aaa-1094-2027-03-21",
+    "date": "2027-03-21",
+    "heure": "09:30",
+    "venue": "frameco",
+    "adv": "Canam Beauce-Appalaches",
+    "dom": false,
+    "num": "1094",
+    "hc": false
+   }
+  ]
+ },
+ "taux": 0.54,
+ "seuilKm": 80,
+ "perDiemMatch": 27.5,
+ "perDiemTournoi": 82.5,
+ "tournois": [
+  {
+   "id": "labaie-m13",
+   "teamId": "m13aaa",
+   "nom": "Tournoi de La Baie",
+   "ville": "La Baie",
+   "debut": "2026-11-26",
+   "fin": "2026-11-29",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2026-11-26",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-27",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-28",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-29",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "pat-m13",
+   "teamId": "m13aaa",
+   "nom": "Tournoi de Pointe-aux-Trembles",
+   "ville": "Pointe-aux-Trembles",
+   "debut": "2027-02-04",
+   "fin": "2027-02-07",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2027-02-04",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-05",
+     "statut": "office"
+    },
+    {
+     "date": "2027-02-06",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-07",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "tr-m13e",
+   "teamId": "m13aaae",
+   "nom": "Tournoi de Trois-Rivières",
+   "ville": "Trois-Rivières",
+   "debut": "2026-11-12",
+   "fin": "2026-11-15",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2026-11-12",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-13",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-14",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-15",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "waterloo-m13e",
+   "teamId": "m13aaae",
+   "nom": "Tournoi de Waterloo",
+   "ville": "Waterloo",
+   "debut": "2027-01-27",
+   "fin": "2027-01-31",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2027-01-28",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-29",
+     "statut": "office"
+    },
+    {
+     "date": "2027-01-30",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-31",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "peewee-m13e",
+   "teamId": "m13aaae",
+   "nom": "Tournoi Pee-Wee de Québec",
+   "ville": "Québec",
+   "debut": "",
+   "fin": "",
+   "exterieur": false,
+   "caseKm": false,
+   "optionnel": true,
+   "jours": [],
+   "indice": ""
+  },
+  {
+   "id": "sherb-m15",
+   "teamId": "m15aaa",
+   "nom": "T.I.B. Sherbrooke",
+   "ville": "Sherbrooke",
+   "debut": "2026-11-11",
+   "fin": "2026-11-15",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2026-11-12",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-13",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-14",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-15",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "labaie-m15",
+   "teamId": "m15aaa",
+   "nom": "Tournoi de La Baie",
+   "ville": "La Baie",
+   "debut": "2027-01-21",
+   "fin": "2027-01-24",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2027-01-21",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-22",
+     "statut": "office"
+    },
+    {
+     "date": "2027-01-23",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-24",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "mtl-m15",
+   "teamId": "m15aaa",
+   "nom": "Tournoi M15 du Grand Montréal",
+   "ville": "Montréal / Granby",
+   "debut": "",
+   "fin": "",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": true,
+   "jours": [],
+   "indice": ""
+  },
+  {
+   "id": "drumm-m15e",
+   "teamId": "m15aaae",
+   "nom": "Tournoi de Drummondville",
+   "ville": "Drummondville",
+   "debut": "2026-11-19",
+   "fin": "2026-11-22",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2026-11-19",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-20",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-21",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-22",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "bantam-m15e",
+   "teamId": "m15aaae",
+   "nom": "Tournoi National Bantam de Québec",
+   "ville": "Québec (Sainte-Foy)",
+   "debut": "2027-01-13",
+   "fin": "2027-01-17",
+   "exterieur": false,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2027-01-14",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-15",
+     "statut": "office"
+    },
+    {
+     "date": "2027-01-16",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-17",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "mtl-m15e",
+   "teamId": "m15aaae",
+   "nom": "Tournoi M15 du Grand Montréal",
+   "ville": "Montréal / Granby",
+   "debut": "",
+   "fin": "",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": true,
+   "jours": [],
+   "indice": ""
+  },
+  {
+   "id": "staug-m17",
+   "teamId": "m17aaa",
+   "nom": "Tournoi de St-Augustin",
+   "ville": "St-Augustin",
+   "debut": "2026-11-05",
+   "fin": "2026-11-08",
+   "exterieur": false,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2026-11-05",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-06",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-07",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-08",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "stjerome-m17",
+   "teamId": "m17aaa",
+   "nom": "Tournoi de St-Jérôme",
+   "ville": "St-Jérôme",
+   "debut": "2027-02-04",
+   "fin": "2027-02-07",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "jours": [
+    {
+     "date": "2027-02-04",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-05",
+     "statut": "office"
+    },
+    {
+     "date": "2027-02-06",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-07",
+     "statut": "option"
+    }
+   ],
+   "indice": ""
+  },
+  {
+   "id": "rseq-parent-m13d1r",
+   "teamId": "m13d1r",
+   "nom": "DÉFI RSEQ Mgr-A.-Parent",
+   "ville": "Saint-Hubert",
+   "debut": "2026-11-12",
+   "fin": "2026-11-15",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2026-11-12",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-13",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-14",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-15",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "rimouski-m13d1r",
+   "teamId": "m13d1r",
+   "nom": "Tournoi de Rimouski",
+   "ville": "Rimouski",
+   "debut": "",
+   "fin": "",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": true,
+   "indice": "À confirmer",
+   "jours": []
+  },
+  {
+   "id": "rdl-m15d3",
+   "teamId": "m15d3",
+   "nom": "Tournoi de Rivière-du-Loup",
+   "ville": "Rivière-du-Loup",
+   "debut": "2026-12-04",
+   "fin": "2026-12-06",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2026-12-04",
+     "statut": "office"
+    },
+    {
+     "date": "2026-12-05",
+     "statut": "option"
+    },
+    {
+     "date": "2026-12-06",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "stgeorges-m15d3",
+   "teamId": "m15d3",
+   "nom": "Tournoi de Saint-Georges",
+   "ville": "Saint-Georges",
+   "debut": "",
+   "fin": "",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": true,
+   "indice": "Pressenti : 3e fin de semaine de janvier 2027",
+   "jours": []
+  },
+  {
+   "id": "rseq-esmsa-m15d1r",
+   "teamId": "m15d1r",
+   "nom": "Défi RSEQ ESMSA",
+   "ville": "Beaupré",
+   "debut": "2026-11-19",
+   "fin": "2026-11-22",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2026-11-19",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-20",
+     "statut": "office"
+    },
+    {
+     "date": "2026-11-21",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-22",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "beauceville-m15d1r",
+   "teamId": "m15d1r",
+   "nom": "Tournoi de Beauceville",
+   "ville": "Beauceville",
+   "debut": "",
+   "fin": "",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": true,
+   "indice": "Pressenti : 4 au 7 février 2027",
+   "jours": []
+  },
+  {
+   "id": "rseq-odyssee-m18d2",
+   "teamId": "m18d2",
+   "nom": "DÉFI RSEQ Odyssée",
+   "ville": "Chicoutimi",
+   "debut": "2027-02-18",
+   "fin": "2027-02-21",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2027-02-18",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-19",
+     "statut": "office"
+    },
+    {
+     "date": "2027-02-20",
+     "statut": "option"
+    },
+    {
+     "date": "2027-02-21",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "drummond-m18d2",
+   "teamId": "m18d2",
+   "nom": "Tournoi de Drummondville",
+   "ville": "Drummondville",
+   "debut": "2027-01-12",
+   "fin": "2027-01-18",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2027-01-14",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-15",
+     "statut": "office"
+    },
+    {
+     "date": "2027-01-16",
+     "statut": "option"
+    },
+    {
+     "date": "2027-01-17",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "rseq-m18d1",
+   "teamId": "m18d1",
+   "nom": "DÉFI RSEQ",
+   "ville": "L'Ancienne-Lorette",
+   "debut": "2026-10-29",
+   "fin": "2026-11-01",
+   "exterieur": false,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2026-10-29",
+     "statut": "option"
+    },
+    {
+     "date": "2026-10-30",
+     "statut": "office"
+    },
+    {
+     "date": "2026-10-31",
+     "statut": "option"
+    },
+    {
+     "date": "2026-11-01",
+     "statut": "option"
+    }
+   ]
+  },
+  {
+   "id": "mortagne-m18d1",
+   "teamId": "m18d1",
+   "nom": "DÉFI RSEQ de Mortagne",
+   "ville": "Boucherville",
+   "debut": "2026-12-03",
+   "fin": "2026-12-06",
+   "exterieur": true,
+   "caseKm": true,
+   "optionnel": false,
+   "indice": "",
+   "jours": [
+    {
+     "date": "2026-12-03",
+     "statut": "option"
+    },
+    {
+     "date": "2026-12-04",
+     "statut": "office"
+    },
+    {
+     "date": "2026-12-05",
+     "statut": "option"
+    },
+    {
+     "date": "2026-12-06",
+     "statut": "option"
+    }
+   ]
+  }
+ ]
+}
