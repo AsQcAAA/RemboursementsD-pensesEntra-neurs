@@ -221,8 +221,17 @@ create policy "direction - tournament_days" on tournament_days for all
 -- la création de comptes passe exclusivement par /api/inviter (clé de
 -- service, contourne RLS) pour rester synchronisée avec Supabase Auth. La
 -- direction peut corriger un nom après coup.
+--
+-- "auth.role() = 'authenticated'" plutôt que "exists (select 1 from staff
+-- ...)" : dans ce projet, personne ne peut obtenir de session Supabase Auth
+-- sans passer par /api/inviter (aucune inscription libre), donc les deux
+-- reviennent au même — mais la seconde forme vérifie l'accès à "staff" en
+-- interrogeant "staff", ce qui déclenche la politique de "staff" elle-même
+-- à l'infini (Postgres : "infinite recursion detected in policy"). Toutes
+-- les autres tables interrogent "staff" dans leur propre politique, donc
+-- cette récursion les rendait, elles aussi, silencieusement vides.
 create policy "lecture entraîneurs - staff" on staff for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (auth.role() = 'authenticated');
 create policy "direction corrige - staff" on staff for update
   using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
   with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
