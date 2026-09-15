@@ -151,6 +151,7 @@ function Stat({ k, v, accent, warn }: { k: string; v: string; accent?: boolean; 
 function Inviter({ teams }: { teams: { id: string; nom: string; organisation: string }[] }) {
   const [email, setEmail] = useState("");
   const [nom, setNom] = useState("");
+  const [nip, setNip] = useState("");
   const [accessRole, setAccessRole] = useState<"coach" | "direction">("coach");
   const [rattachements, setRattachements] = useState<{ team_id: string; titre: "chef" | "adjoint" | "extra"; portee: "titulaire" | "superviseur" }[]>([]);
   const [envoi, setEnvoi] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
@@ -173,17 +174,18 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
     const res = await fetch("/api/inviter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, full_name: nom, access_role: accessRole, memberships: rattachements }),
+      body: JSON.stringify({ email, full_name: nom, nip, access_role: accessRole, memberships: rattachements }),
     });
     setSending(false);
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setEnvoi({ kind: "error", text: data.error || "Échec de l'invitation." });
+      setEnvoi({ kind: "error", text: data.error || "Échec de la création du compte." });
       return;
     }
-    setEnvoi({ kind: "ok", text: `Invitation envoyée à ${email}.` });
+    setEnvoi({ kind: "ok", text: `Compte créé pour ${nom} — code d'accès ${nip}.` });
     setEmail("");
     setNom("");
+    setNip("");
     setRattachements([]);
   }
 
@@ -197,6 +199,22 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
         <div>
           <label className="label">Courriel</label>
           <input required type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className="label">Code d&apos;accès (4 chiffres)</label>
+          <input
+            required
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={4}
+            className="input font-mono tracking-widest"
+            value={nip}
+            onChange={(e) => setNip(e.target.value.replace(/\D/g, "").slice(0, 4))}
+          />
+          <p className="text-xs text-slate-400 mt-1">C&apos;est ce code que la personne utilisera pour se connecter.</p>
         </div>
       </div>
       <div>

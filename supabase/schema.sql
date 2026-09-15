@@ -42,6 +42,13 @@ create table if not exists staff (
   id uuid primary key references auth.users (id) on delete cascade,
   full_name text not null,
   email text not null,
+  -- Code d'accès à 4 chiffres utilisé pour se connecter (voir src/lib/nip.ts)
+  -- — repris tel quel de l'ancien portail pour les 9 entraîneurs déjà en
+  -- poste. Pas un vrai secret (déjà visible dans le code source de l'ancien
+  -- portail), mais stocké quand même en clair uniquement pour que la
+  -- direction puisse le consulter/communiquer, jamais utilisé seul côté
+  -- serveur : voir nipToPassword().
+  nip text unique,
   access_role text not null default 'coach' check (access_role in ('coach', 'direction')),
   created_at timestamptz not null default now()
 );

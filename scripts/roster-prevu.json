@@ -10,7 +10,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "jean.grignonfrancke@asdequebecaaa.com"
+  "email": "jean.grignonfrancke@asdequebecaaa.com",
+  "nip": "1701"
  },
  {
   "nom": "JP Côté",
@@ -23,7 +24,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1502"
  },
  {
   "nom": "Olivier Simoneau-Paquet",
@@ -36,7 +38,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1503"
  },
  {
   "nom": "Rafael Massé",
@@ -49,7 +52,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1301"
  },
  {
   "nom": "Serge Alain",
@@ -62,7 +66,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1302"
  },
  {
   "nom": "Renaud Blais",
@@ -99,7 +104,8 @@
     "portee": "superviseur"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1801"
  },
  {
   "nom": "Félix Devost",
@@ -118,7 +124,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1802"
  },
  {
   "nom": "Gabriel Bossé",
@@ -131,7 +138,8 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1504"
  },
  {
   "nom": "Jérémy Ste-Marie",
@@ -144,6 +152,7 @@
     "portee": "titulaire"
    }
   ],
-  "email": "À DEMANDER À JEAN"
+  "email": "À DEMANDER À JEAN",
+  "nip": "1303"
  }
 ]

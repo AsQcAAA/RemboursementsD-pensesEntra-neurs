@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { nipToPassword, nipValide } from "@/lib/nip";
 
-// Renvoie l'accès à un entraîneur déjà invité (courriel perdu ou expiré).
-// Deux cas côté Supabase : la personne n'a jamais choisi son mot de passe
-// → réinvitation directe (même courriel) ; elle l'a déjà fait (compte
-// confirmé) → l'invitation échoue, on retombe sur un courriel de
-// réinitialisation, qui mène à la même page. Patron repris de l'appli M17.
+// Change le code d'accès d'un entraîneur déjà créé (code oublié, ou attribué
+// par erreur). Pas de courriel à renvoyer : la direction communique
+// elle-même le nouveau code à la personne.
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const {
@@ -18,32 +17,32 @@ export async function POST(req: NextRequest) {
 
   const { data: profile } = await supabase.from("staff").select("access_role").eq("id", user.id).single();
   if (profile?.access_role !== "direction") {
-    return NextResponse.json({ error: "Seule la direction peut renvoyer une invitation." }, { status: 403 });
+    return NextResponse.json({ error: "Seule la direction peut changer un code d'accès." }, { status: 403 });
   }
 
-  const { staffId } = (await req.json()) as { staffId: string };
-  if (!staffId) {
-    return NextResponse.json({ error: "staffId requis." }, { status: 400 });
+  const { staffId, nip } = (await req.json()) as { staffId: string; nip: string };
+  if (!staffId || !nipValide(nip)) {
+    return NextResponse.json({ error: "staffId et code d'accès à 4 chiffres requis." }, { status: 400 });
   }
 
   const service = createServiceClient();
-  const { data: target, error: getError } = await service.auth.admin.getUserById(staffId);
-  const email = target?.user?.email;
-  if (getError || !email) {
-    return NextResponse.json({ error: "Impossible de retrouver le courriel de cette personne." }, { status: 404 });
+
+  const { data: existant } = await service.from("staff").select("id").eq("nip", nip).neq("id", staffId).maybeSingle();
+  if (existant) {
+    return NextResponse.json({ error: "Ce code d'accès est déjà utilisé par quelqu'un d'autre." }, { status: 409 });
   }
 
-  const siteUrl = req.nextUrl.origin;
-  const redirectTo = `${siteUrl}/definir-mot-de-passe`;
-
-  const { error: inviteError } = await service.auth.admin.inviteUserByEmail(email, { redirectTo });
-  if (!inviteError) {
-    return NextResponse.json({ ok: true, mode: "invite" });
+  const { error: authError } = await service.auth.admin.updateUserById(staffId, {
+    password: nipToPassword(nip),
+  });
+  if (authError) {
+    return NextResponse.json({ error: authError.message }, { status: 500 });
   }
 
-  const { error: resetError } = await service.auth.resetPasswordForEmail(email, { redirectTo });
-  if (resetError) {
-    return NextResponse.json({ error: resetError.message }, { status: 500 });
+  const { error: profileError } = await service.from("staff").update({ nip }).eq("id", staffId);
+  if (profileError) {
+    return NextResponse.json({ error: profileError.message }, { status: 500 });
   }
-  return NextResponse.json({ ok: true, mode: "reset" });
+
+  return NextResponse.json({ ok: true });
 }

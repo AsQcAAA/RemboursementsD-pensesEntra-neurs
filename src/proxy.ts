@@ -4,8 +4,9 @@ import { updateSession } from "@/lib/supabase/middleware";
 // Verrouille toute l'appli derrière Supabase Auth. Seuls les entraîneurs
 // invités (voir /api/inviter, réservé à la direction) peuvent atteindre une
 // page — les montants réclamés et les coordonnées d'hébergement n'ont rien
-// de public.
-const PUBLIC_PATHS = ["/login", "/definir-mot-de-passe"];
+// de public. /api/coachs et /api/connexion doivent rester publics : ce sont
+// eux qui alimentent et traitent l'écran de connexion par NIP.
+const PUBLIC_PATHS = ["/login", "/api/coachs", "/api/connexion"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;

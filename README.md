@@ -45,21 +45,29 @@ npm run dev
 
 ## 4. Premier compte (direction)
 
+Les entraîneurs se connectent avec un code d'accès à 4 chiffres (le même que sur
+l'ancien portail — Jean = `1701`), pas un mot de passe libre. Le mot de passe
+Supabase Auth réel derrière ce code est dérivé du NIP (`src/lib/nip.ts`,
+`nipToPassword`) — pas un secret en soi, juste ce qu'il faut pour satisfaire la
+longueur minimale de Supabase Auth.
+
 Aucun compte n'existe encore — il faut en créer un manuellement pour la première
-personne (toi) :
+personne (toi), le site n'ayant encore personne pour t'inviter :
 1. Dans Supabase → **Authentication → Users → Add user**, crée ton compte avec ton
-   courriel (choisis « Auto Confirm User »).
+   courriel, et comme mot de passe colle exactement `AsQc-1701-Rembourse` (choisis
+   « Auto Confirm User »).
 2. Dans **SQL Editor**, insère ta ligne `staff` (remplace l'id par celui de l'utilisateur
    créé, visible dans la liste des utilisateurs) :
    ```sql
-   insert into staff (id, full_name, email, access_role)
-   values ('<uuid-de-l-utilisateur>', 'Jean Grignon-Francke', 'jean.grignonfrancke@asdequebecaaa.com', 'direction');
+   insert into staff (id, full_name, email, nip, access_role)
+   values ('<uuid-de-l-utilisateur>', 'Jean Grignon-Francke', 'jean.grignonfrancke@asdequebecaaa.com', '1701', 'direction');
    ```
-3. Connecte-toi sur le site avec ce courriel (mot de passe défini lors de la création du
-   compte, ou utilise « Reset password » depuis Supabase).
-4. Une fois connecté, utilise **Direction → Inviter un entraîneur** pour inviter les 9
-   autres — voir `scripts/roster-prevu.json` pour le rattachement équipe(s)/rôle prévu de
-   chacun (les courriels réels restent à obtenir).
+3. Connecte-toi sur le site : choisis ton nom dans la liste, code d'accès `1701`.
+4. Une fois connecté, utilise **Direction → Inviter un entraîneur** pour créer les 9
+   autres comptes — voir `scripts/roster-prevu.json` pour le rattachement
+   équipe(s)/rôle et le NIP déjà connu de chacun (les courriels réels restent à
+   obtenir). Chaque personne peut se connecter dès que son compte est créé, sans
+   courriel à confirmer ni mot de passe à choisir.
 
 ## 5. Déploiement
 
@@ -75,5 +83,8 @@ Variables**, puis déploie.
   utilisée par l'écran, le PDF et le courriel.
 - `src/lib/pdf.ts` — génération du PDF (jsPDF + jspdf-autotable, côté serveur).
 - `src/app/api/envoyer` — génère le PDF et l'envoie par Resend (pièce jointe).
-- `src/app/api/inviter` — invite un entraîneur (Supabase Auth) et crée ses rattachements
-  d'équipe.
+- `src/app/api/inviter` — crée le compte d'un entraîneur (Supabase Auth, mot de passe
+  dérivé de son NIP) et ses rattachements d'équipe.
+- `src/app/api/connexion` — connexion par NIP : retrouve le courriel côté serveur à
+  partir du nom choisi, puis se connecte avec le mot de passe dérivé du code.
+- `src/lib/nip.ts` — transforme un code à 4 chiffres en mot de passe Supabase Auth.

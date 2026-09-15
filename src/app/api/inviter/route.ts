@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { nipToPassword, nipValide } from "@/lib/nip";
 
-// Seule la direction peut inviter. Utilise la clé de service côté serveur
-// uniquement (jamais exposée au navigateur) pour envoyer l'invitation
-// Supabase; la personne invitée choisit son mot de passe sur
-// /definir-mot-de-passe. Patron repris de l'appli M17 (src/app/api/invite),
-// étendu pour créer directement les rattachements d'équipe en même temps.
+// Seule la direction peut inviter. Contrairement à l'appli M17, il n'y a pas
+// de courriel d'invitation ni d'étape « choisis ton mot de passe » : le
+// compte Supabase Auth est créé directement, mot de passe = NIP transformé
+// (voir lib/nip.ts) — la personne se connecte tout de suite avec son code à
+// 4 chiffres, exactement comme sur l'ancien portail.
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const {
@@ -21,9 +22,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Seule la direction peut inviter." }, { status: 403 });
   }
 
-  const { email, full_name, access_role, memberships } = (await req.json()) as {
+  const { email, full_name, nip, access_role, memberships } = (await req.json()) as {
     email: string;
     full_name: string;
+    nip: string;
     access_role: "coach" | "direction";
     memberships: { team_id: string; titre: "chef" | "adjoint" | "extra"; portee: "titulaire" | "superviseur" }[];
   };
@@ -31,21 +33,32 @@ export async function POST(req: NextRequest) {
   if (!email || !full_name) {
     return NextResponse.json({ error: "Courriel et nom requis." }, { status: 400 });
   }
+  if (!nipValide(nip)) {
+    return NextResponse.json({ error: "Le code d'accès doit contenir 4 chiffres." }, { status: 400 });
+  }
 
   const service = createServiceClient();
-  const siteUrl = req.nextUrl.origin;
-  const { data: invited, error: inviteError } = await service.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${siteUrl}/definir-mot-de-passe`,
+
+  const { data: existant } = await service.from("staff").select("id").eq("nip", nip).maybeSingle();
+  if (existant) {
+    return NextResponse.json({ error: "Ce code d'accès est déjà utilisé par quelqu'un d'autre." }, { status: 409 });
+  }
+
+  const { data: created, error: createError } = await service.auth.admin.createUser({
+    email,
+    password: nipToPassword(nip),
+    email_confirm: true,
   });
 
-  if (inviteError || !invited.user) {
-    return NextResponse.json({ error: inviteError?.message ?? "Échec de l'invitation." }, { status: 500 });
+  if (createError || !created.user) {
+    return NextResponse.json({ error: createError?.message ?? "Échec de la création du compte." }, { status: 500 });
   }
 
   const { error: profileError } = await service.from("staff").insert({
-    id: invited.user.id,
+    id: created.user.id,
     full_name,
     email,
+    nip,
     access_role: access_role === "direction" ? "direction" : "coach",
   });
   if (profileError) {
@@ -54,7 +67,7 @@ export async function POST(req: NextRequest) {
 
   if (memberships?.length) {
     const rows = memberships.map((m) => ({
-      staff_id: invited.user!.id,
+      staff_id: created.user!.id,
       team_id: m.team_id,
       titre: m.titre,
       portee: m.portee,

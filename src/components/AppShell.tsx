@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Nav from "./Nav";
 
-const NO_SIDEBAR_ROUTES = ["/login", "/definir-mot-de-passe"];
+const NO_SIDEBAR_ROUTES = ["/login"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

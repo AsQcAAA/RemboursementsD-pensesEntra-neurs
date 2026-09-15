@@ -134,6 +134,9 @@ for acc in data["accounts"]:
         "access_role": "direction" if acc.get("admin") else "coach",
         "memberships": memberships,
         "email": "À DEMANDER À JEAN" if acc["id"] != "jean" else "jean.grignonfrancke@asdequebecaaa.com",
+        # Même code d'accès que l'ancien portail — à saisir tel quel dans
+        # Direction > Inviter un entraîneur, champ "Code d'accès".
+        "nip": acc["nip"],
     })
 (ICI / "roster-prevu.json").write_text(json.dumps(roster, ensure_ascii=False, indent=1), encoding="utf-8")
 print("écrit : scripts/roster-prevu.json (référence pour les invitations)")

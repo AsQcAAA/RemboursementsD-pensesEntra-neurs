@@ -20,7 +20,7 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { me, isDirection, estSuperviseur } = useStaff();
 
-  if (pathname === "/login" || pathname === "/definir-mot-de-passe") return null;
+  if (pathname === "/login") return null;
 
   const tabs = [...TABS];
   if (isDirection || estSuperviseur) tabs.push(RECAP_TAB);
