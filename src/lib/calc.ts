@@ -5,6 +5,20 @@ export const TAUX_KM = 0.54;
 export const SEUIL_KM = 80; // franchise aller-retour, en km
 export const PER_DIEM_MATCH = 27.5;
 export const PER_DIEM_TOURNOI = 82.5;
+// Chevaliers seulement — voir calcMatch : en semaine (journée pédagogique),
+// jamais d'autobus scolaire, peu importe la distance ; un véhicule peut
+// être remboursé selon le kilométrage. La fin de semaine, l'autobus prend
+// le relais seulement au-delà de ce seuil (aller) — sous le seuil, même
+// règle qu'en semaine (kilométrage remboursable).
+export const SEUIL_AUTOCAR_CHEVALIERS_KM = 200;
+
+export type Organisation = "As" | "Chevaliers";
+
+function estFinDeSemaine(dateISO: string): boolean {
+  const [y, m, d] = dateISO.split("-").map(Number);
+  const jour = new Date(y, m - 1, d).getDay(); // 0 = dimanche, 6 = samedi
+  return jour === 0 || jour === 6;
+}
 
 export interface Venue {
   id: string;
@@ -54,11 +68,20 @@ export function matchRemboursable(game: Game, venue: Venue): boolean {
   return !game.domicile && 2 * venue.km > SEUIL_KM;
 }
 
-export function calcMatch(game: Game, venue: Venue, claim: MatchClaim | null): MatchCalc {
+/** Déplacement en autobus (aucun km remboursable) plutôt qu'en voiture. As :
+ * propriété fixe de l'aréna. Chevaliers : jamais en semaine (journée
+ * pédagogique, peu importe la distance), seulement la fin de semaine et à
+ * plus de 200 km aller — voir SEUIL_AUTOCAR_CHEVALIERS_KM. */
+export function estAutocar(game: Game, venue: Venue, organisation: Organisation = "As"): boolean {
+  if (game.forcedCar) return false;
+  return organisation === "Chevaliers" ? estFinDeSemaine(game.date) && venue.km > SEUIL_AUTOCAR_CHEVALIERS_KM : venue.autocar;
+}
+
+export function calcMatch(game: Game, venue: Venue, claim: MatchClaim | null, organisation: Organisation = "As"): MatchCalc {
   const present = claim?.present ?? [];
   const driver = claim?.driver ?? null;
   const admissible = matchRemboursable(game, venue);
-  const autocar = venue.autocar && !game.forcedCar;
+  const autocar = estAutocar(game, venue, organisation);
   const kmFacturables = admissible && !autocar ? Math.max(0, 2 * venue.km - SEUIL_KM) : 0;
   const kmMontant = kmFacturables > 0 && driver ? +(kmFacturables * TAUX_KM).toFixed(2) : 0;
   const repas = admissible ? present.length * PER_DIEM_MATCH : 0;

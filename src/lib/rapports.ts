@@ -72,7 +72,7 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
     if (g.domicile) continue; // aucune dépense attribuable à domicile
     if (perId && periodeDe(g.date).id !== perId) continue;
     const venue = donnees.venues[g.venueId];
-    const c = calcMatch(g, venue, g.claim);
+    const c = calcMatch(g, venue, g.claim, donnees.team.organisation as "As" | "Chevaliers");
     if (c.total <= 0) continue;
     if (c.kmMontant > 0 && g.claim?.driver && entraineurs.has(g.claim.driver)) {
       entraineurs.get(g.claim.driver)!.km += c.kmMontant;

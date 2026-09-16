@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useStaff } from "@/lib/useStaff";
 import { useDonneesMultiEquipes } from "@/lib/donnees";
 import { ligneDe } from "@/lib/rapports";
-import { calcMatch, money, fdateLong } from "@/lib/calc";
+import { calcMatch, estAutocar, money, fdateLong } from "@/lib/calc";
 import { createClient } from "@/lib/supabase/client";
 
 type Onglet = "tableau" | "inviter" | "logistique";
@@ -61,7 +61,7 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
   const parJour: Record<string, Record<string, string[]>> = {};
   for (const t of teams) {
     for (const g of d.gamesParEquipe[t.id] ?? []) {
-      if (!g.claim || calcMatch(g, d.venues[g.venueId], g.claim).total <= 0) continue;
+      if (!g.claim || calcMatch(g, d.venues[g.venueId], g.claim, t.organisation as "As" | "Chevaliers").total <= 0) continue;
       for (const id of g.claim.present) {
         (parJour[g.date] ??= {});
         (parJour[g.date][id] ??= []).push(t.nom);
@@ -302,7 +302,11 @@ function Logistique({ teams, d }: { teams: { id: string; nom: string; organisati
   const supabase = createClient();
   const [notes, setNotes] = useState<Record<string, string>>({});
 
-  const busGames = teams.flatMap((t) => (d.gamesParEquipe[t.id] ?? []).filter((g) => !g.domicile && d.venues[g.venueId]?.autocar && !g.forcedCar).map((g) => ({ t, g })));
+  const busGames = teams.flatMap((t) =>
+    (d.gamesParEquipe[t.id] ?? [])
+      .filter((g) => !g.domicile && d.venues[g.venueId] && estAutocar(g, d.venues[g.venueId], t.organisation as "As" | "Chevaliers"))
+      .map((g) => ({ t, g }))
+  );
 
   async function sauverDepart(gameId: string, note: string) {
     setNotes((n) => ({ ...n, [gameId]: note }));
@@ -312,7 +316,7 @@ function Logistique({ teams, d }: { teams: { id: string; nom: string; organisati
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-semibold mb-2">Départs d&apos;autocar — {busGames.length} déplacement(s) de plus de 2h</h3>
+        <h3 className="font-semibold mb-2">Départs d&apos;autocar — {busGames.length} déplacement(s)</h3>
         <div className="overflow-x-auto border border-ink-700 rounded-md">
           <table className="w-full text-sm">
             <thead>

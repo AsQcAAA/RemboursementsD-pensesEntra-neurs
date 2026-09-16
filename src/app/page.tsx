@@ -38,8 +38,11 @@ export default function CalendrierPage() {
   if (loadingStaff) return <p className="text-slate-400">Chargement...</p>;
   if (!teamIdEffectif) return <p className="text-slate-400">Aucune équipe ne t&apos;est rattachée.</p>;
 
+  const organisation = (equipe?.organisation ?? "As") as "As" | "Chevaliers";
   const matchsRembo = elements.filter((e) => e.type === "match").length;
-  const remplis = elements.filter((e) => e.type === "match" && e.g.claim && calcMatch(e.g, d.venues[e.g.venueId], e.g.claim).total > 0).length;
+  const remplis = elements.filter(
+    (e) => e.type === "match" && e.g.claim && calcMatch(e.g, d.venues[e.g.venueId], e.g.claim, organisation).total > 0
+  ).length;
   const totalEquipe = ligneDe(
     { team: equipe!, games: d.games, tournaments: d.tournaments, venues: d.venues, staff: d.staffAll, teamStaff: d.teamStaff }
   ).total;
@@ -87,12 +90,13 @@ export default function CalendrierPage() {
             const g = e.g;
             return (
               <div key={g.id}>
-                <LigneMatch g={g} venue={d.venues[g.venueId]} ouvert={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
+                <LigneMatch g={g} venue={d.venues[g.venueId]} organisation={organisation} ouvert={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
                 {open === g.id && (
                   <EditeurMatch
                     g={g}
                     venue={d.venues[g.venueId]}
                     staff={staffNoms}
+                    organisation={organisation}
                     lectureSeule={lectureSeule}
                     onSave={(patch) => d.sauverClaimMatch(g.id, patch)}
                     onClear={() => d.effacerClaimMatch(g.id)}
@@ -135,8 +139,16 @@ function FiltrePill({ actif, onClick, children }: { actif: boolean; onClick: () 
   );
 }
 
-function LigneMatch({ g, venue, ouvert, onToggle }: { g: GameRow; venue: ReturnType<typeof useDonneesEquipe>["venues"][string]; ouvert: boolean; onToggle: () => void }) {
-  const c = calcMatch(g, venue, g.claim);
+function LigneMatch({
+  g, venue, organisation, ouvert, onToggle,
+}: {
+  g: GameRow;
+  venue: ReturnType<typeof useDonneesEquipe>["venues"][string];
+  organisation: "As" | "Chevaliers";
+  ouvert: boolean;
+  onToggle: () => void;
+}) {
+  const c = calcMatch(g, venue, g.claim, organisation);
   const libelle = (g.domicile ? "vs " : "@ ") + g.adversaire;
   return (
     <button onClick={onToggle} className={`w-full text-left flex items-center gap-3 px-4 py-3 border-t border-ink-700 first:border-t-0 hover:bg-ink-700/50 ${ouvert ? "bg-ink-700/50" : ""}`}>
@@ -192,18 +204,19 @@ function LigneTournoi({ t, ouvert, onToggle }: { t: TournamentRow; ouvert: boole
 }
 
 function EditeurMatch({
-  g, venue, staff, lectureSeule, onSave, onClear,
+  g, venue, staff, organisation, lectureSeule, onSave, onClear,
 }: {
   g: GameRow;
   venue: ReturnType<typeof useDonneesEquipe>["venues"][string];
   staff: { staff_id: string; nom: string; titre: string }[];
+  organisation: "As" | "Chevaliers";
   lectureSeule: boolean;
   onSave: (patch: { present?: string[]; driver?: string | null }) => void;
   onClear: () => void;
 }) {
   const present = g.claim?.present ?? [];
   const driver = g.claim?.driver ?? null;
-  const c = calcMatch(g, venue, g.claim);
+  const c = calcMatch(g, venue, g.claim, organisation);
 
   function togglePresent(id: string) {
     const next = present.includes(id) ? present.filter((x) => x !== id) : [...present, id];
@@ -216,7 +229,10 @@ function EditeurMatch({
       <div>
         {c.autocar && (
           <p className="text-xs bg-sky-900/30 border-l-2 border-sky-400 px-3 py-2 mb-3 text-sky-200">
-            Plus de 2h de route ({km(venue?.km ?? 0)}) : autocar de luxe. Aucun km, seul le per diem s&apos;applique.
+            {organisation === "Chevaliers"
+              ? `Match de fin de semaine à plus de 200 km (${km(venue?.km ?? 0)}) : autobus scolaire.`
+              : `Plus de 2h de route (${km(venue?.km ?? 0)}) : autocar de luxe.`}{" "}
+            Aucun km, seul le per diem s&apos;applique.
           </p>
         )}
         <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2 flex items-center gap-2">

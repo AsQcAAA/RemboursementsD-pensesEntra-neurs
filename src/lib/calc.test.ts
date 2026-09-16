@@ -49,6 +49,31 @@ t("Jonquière match régulier : autocar maintenu, aucun km", calcMatch(jeu({ ven
 t("Cabano : plus de 2h -> autocar", calcMatch(jeu({ venueId: "cabano" }), cabano, { present: ["a"], driver: "a" }).autocar, true);
 t("matchRemboursable() exclut le domicile et sous 40km aller", [matchRemboursable(jeu({ domicile: true }), marcSimoneau), matchRemboursable(jeu({ venueId: "bruno-verret" }), brunoVerret)], [false, false]);
 
+// Chevaliers : jamais d'autobus en semaine (journée pédagogique), peu
+// importe la distance ; la fin de semaine, autobus seulement au-delà de
+// 200 km aller — sous ce seuil, même règle qu'en semaine (voiture).
+// jeu() daté par défaut au 2027-01-31, un dimanche.
+t(
+  "Chevaliers, fin de semaine, >200km aller : autobus, aucun km",
+  calcMatch(jeu({ venueId: "jonquiere" }), jonquiere, { present: ["a"], driver: "a" }, "Chevaliers").autocar,
+  true
+);
+t(
+  "Chevaliers, journée pédagogique (semaine), même trajet : voiture, km remboursé",
+  calcMatch(jeu({ venueId: "jonquiere", date: "2027-02-01" }), jonquiere, { present: ["a"], driver: "a" }, "Chevaliers").kmFacturables,
+  347
+);
+t(
+  "Chevaliers, fin de semaine, sous 200km aller : voiture, km remboursé",
+  calcMatch(jeu(), videotronTR, { present: ["a"], driver: "a" }, "Chevaliers").autocar,
+  false
+);
+t(
+  "As (organisation par défaut) : règle par aréna inchangée",
+  calcMatch(jeu({ venueId: "jonquiere" }), jonquiere, { present: ["a"], driver: "a" }).autocar,
+  true
+);
+
 const stAugustin: Tournament = { id: "staug", teamId: "m17aaa", nom: "Tournoi de St-Augustin", ville: "St-Augustin", debut: "2026-11-05", fin: "2026-11-08", exterieur: false, caseKm: true, optionnel: false, indice: null, jours: joursOfferts("2026-11-05", "2026-11-08") };
 const stJerome: Tournament = { id: "stj", teamId: "m17aaa", nom: "Tournoi de St-Jérôme", ville: "St-Jérôme", debut: "2027-02-04", fin: "2027-02-07", exterieur: true, caseKm: true, optionnel: false, indice: null, jours: joursOfferts("2027-02-04", "2027-02-07") };
 const peeWee: Tournament = { id: "pw", teamId: "m13aaae", nom: "Tournoi Pee-Wee", ville: "Québec", debut: null, fin: null, exterieur: false, caseKm: false, optionnel: true, indice: "À confirmer", jours: [] };
