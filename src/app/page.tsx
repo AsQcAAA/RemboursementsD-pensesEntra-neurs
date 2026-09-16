@@ -369,9 +369,6 @@ function EditeurTournoi({
             <div key={j.date} className="border-t border-ink-700 pt-3">
               <div className="flex items-baseline gap-2 mb-2">
                 <b className="text-sm">{fdateLong(j.date)}</b>
-                <span className={`badge ${j.statut === "office" ? "bg-ink-700 text-slate-300" : "bg-sky-900/40 text-sky-200"}`}>
-                  {j.statut === "office" ? "Incluse d'office" : "En option"}
-                </span>
                 <span className="flex-1" />
                 <span className="font-mono text-xs text-slate-400">
                   {n} présent{n > 1 ? "s" : ""} · {money(n * PER_DIEM_TOURNOI)}

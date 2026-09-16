@@ -104,8 +104,10 @@ export interface TournamentDay {
   statut: JourStatut;
 }
 
-/** Journées offertes pour un tournoi : le vendredi est inclus d'office, le
- * jeudi/samedi/dimanche sont en option, le mercredi n'est jamais offert — un
+/** Journées offertes pour un tournoi : le jeudi, vendredi, samedi et
+ * dimanche sont tous cochables de la même façon — aucune journée n'est
+ * incluse d'office, l'entraîneur coche lui-même sa présence et celle de ses
+ * adjoints pour chaque journée. Le mercredi n'est jamais offert — un
  * tournoi qui débute le mercredi n'ouvre donc le choix qu'à partir du jeudi. */
 export function joursOfferts(debut: string, fin: string): TournamentDay[] {
   if (!debut || !fin || fin < debut) return [];
@@ -116,7 +118,7 @@ export function joursOfferts(debut: string, fin: string): TournamentDay[] {
   while (cur <= last && garde < 14) {
     const jour = cur.getDay(); // 0=dim ... 4=jeu, 5=ven, 6=sam
     if (jour === 4 || jour === 5 || jour === 6 || jour === 0) {
-      out.push({ date: cur.toISOString().slice(0, 10), statut: jour === 5 ? "office" : "option" });
+      out.push({ date: cur.toISOString().slice(0, 10), statut: "option" });
     }
     cur.setDate(cur.getDate() + 1);
     garde++;

@@ -84,8 +84,8 @@ t("St-Jérôme (extérieur) : per diem sur 2 jours", calcTournoi(stJerome, { km:
 t("Pee-Wee : sans case km, rien même avec présence déclarée", calcTournoi(peeWee, { km: 500, driver: "a", presence: {} }).total, 0);
 
 t("mercredi jamais offert (Waterloo débute un mercredi)", joursOfferts("2027-01-27", "2027-01-31").map((j) => j.date), ["2027-01-28", "2027-01-29", "2027-01-30", "2027-01-31"]);
-t("vendredi toujours d'office", joursOfferts("2026-11-26", "2026-11-29").map((j) => j.statut), ["option", "office", "option", "option"]);
-t("tournoi qui débute un vendredi : 3 jours (pas de jeudi)", joursOfferts("2026-12-04", "2026-12-06").map((j) => j.statut), ["office", "option", "option"]);
+t("aucune journée incluse d'office — toutes cochables également", joursOfferts("2026-11-26", "2026-11-29").map((j) => j.statut), ["option", "option", "option", "option"]);
+t("tournoi qui débute un vendredi : 3 jours (pas de jeudi)", joursOfferts("2026-12-04", "2026-12-06").map((j) => j.date), ["2026-12-04", "2026-12-05", "2026-12-06"]);
 
 console.log(`\n${ok} tests réussis, ${ko} échec(s)`);
 process.exit(ko ? 1 : 0);

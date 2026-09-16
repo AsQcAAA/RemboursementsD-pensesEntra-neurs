@@ -105,9 +105,12 @@ for tr in data["tournois"]:
     )
     for j in tr.get("jours", []):
         jid = uid("tournament_day", tr["id"], j["date"])
+        # Toutes les journées de tournoi sont cochables de la même façon —
+        # plus de vendredi "inclus d'office", l'entraîneur coche chaque
+        # journée (jeudi à dimanche) lui-même.
         out.append(
             f"insert into tournament_days (id, tournament_id, jour_date, statut) values "
-            f"({sql_str(jid)}, {sql_str(trid)}, {sql_str(j['date'])}, {sql_str(j['statut'])}) "
+            f"({sql_str(jid)}, {sql_str(trid)}, {sql_str(j['date'])}, 'option') "
             f"on conflict (tournament_id, jour_date) do update set statut = excluded.statut;"
         )
 out.append("")
