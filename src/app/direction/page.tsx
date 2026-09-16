@@ -25,7 +25,7 @@ export default function DirectionPage() {
           [
             ["tableau", "Tableau de bord"],
             ["inviter", "Inviter un entraîneur"],
-            ["logistique", "Autocars & hôtels"],
+            ["logistique", "Autocars"],
           ] as [Onglet, string][]
         ).map(([id, label]) => (
           <button key={id} onClick={() => setOnglet(id)} className={`badge ${onglet === id ? "bg-gold-500 text-ink-900 font-semibold" : "bg-ink-700 text-slate-200"}`}>
@@ -54,6 +54,8 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
     return { t, R: ligneDe(donnees), nbGames: (d.gamesParEquipe[t.id] ?? []).length };
   });
   const grand = rows.reduce((s, r) => s + r.R.total, 0);
+  const totalAs = rows.filter((r) => r.t.organisation === "As").reduce((s, r) => s + r.R.total, 0);
+  const totalChevaliers = rows.filter((r) => r.t.organisation === "Chevaliers").reduce((s, r) => s + r.R.total, 0);
 
   // Détecteur de doubles réclamations : même entraîneur, même jour, équipes différentes.
   const parJour: Record<string, Record<string, string[]>> = {};
@@ -82,7 +84,11 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
       <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink-700 border border-ink-700 rounded-lg overflow-hidden">
         <Stat k="Équipes" v={String(teams.length)} />
         <Stat k="Doubles réclamations" v={String(conflits.length)} warn={conflits.length > 0} />
-        <Stat k="Engagement total" v={money(grand)} accent />
+        <Stat k="Total As" v={money(totalAs)} accent />
+        <Stat k="Total Chevaliers" v={money(totalChevaliers)} accent />
+      </div>
+      <div className="grid grid-cols-1 gap-px bg-ink-700 border border-ink-700 rounded-lg overflow-hidden">
+        <Stat k="Engagement total (As + Chevaliers)" v={money(grand)} accent />
       </div>
 
       <div className="overflow-x-auto border border-ink-700 rounded-md">
