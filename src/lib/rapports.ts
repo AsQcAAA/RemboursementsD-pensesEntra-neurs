@@ -13,7 +13,8 @@ export interface StaffRef {
 }
 export interface TeamStaffRow {
   staff_id: string;
-  titre: "chef" | "adjoint" | "extra" | "superviseur";
+  titre: "chef" | "adjoint" | "extra";
+  portee: "titulaire" | "superviseur";
 }
 
 export interface LigneRapport {
@@ -54,7 +55,7 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
   const roleParId = new Map(donnees.teamStaff.map((ts) => [ts.staff_id, ts.titre]));
   const entraineurs = new Map<string, EntraineurTotal>();
   for (const ts of donnees.teamStaff) {
-    if (ts.titre === "superviseur") continue;
+    if (ts.portee === "superviseur") continue;
     entraineurs.set(ts.staff_id, {
       id: ts.staff_id,
       nom: nomParId.get(ts.staff_id) ?? ts.staff_id,

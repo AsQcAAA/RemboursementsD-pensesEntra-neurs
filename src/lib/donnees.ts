@@ -87,7 +87,7 @@ export function useDonneesEquipe(teamId: string | null) {
     recharger();
   }, [recharger]);
 
-  const teamStaff = teamStaffAll.filter((ts) => ts.titre !== "superviseur");
+  const teamStaff = teamStaffAll.filter((ts) => ts.portee !== "superviseur");
 
   async function sauverClaimMatch(gameId: string, patch: Partial<MatchClaim>) {
     setGames((cur) => cur.map((g) => (g.id === gameId ? { ...g, claim: { present: [], driver: null, ...g.claim, ...patch } } : g)));
@@ -207,7 +207,7 @@ export function useDonneesMultiEquipes(teamIds: string[]) {
       setStaffAll(staffRows ?? []);
       const tspe: Record<string, (TeamStaffRow & { staff_id: string })[]> = {};
       for (const ts of (teamStaffRows ?? []) as (TeamStaffRow & { staff_id: string; team_id: string })[]) {
-        if (ts.titre === "superviseur") continue;
+        if (ts.portee === "superviseur") continue;
         (tspe[ts.team_id] ??= []).push(ts);
       }
       setTeamStaffParEquipe(tspe);

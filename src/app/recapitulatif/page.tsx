@@ -25,7 +25,7 @@ export default function RecapitulatifPage() {
       tournaments: d.tournamentsParEquipe[t.id] ?? [],
       venues: d.venues,
       staff: d.staffAll,
-      teamStaff: (d.teamStaffParEquipe[t.id] ?? []).map((ts) => ({ staff_id: ts.staff_id, titre: ts.titre })),
+      teamStaff: (d.teamStaffParEquipe[t.id] ?? []).map((ts) => ({ staff_id: ts.staff_id, titre: ts.titre, portee: ts.portee })),
       chefNom,
     };
   });
