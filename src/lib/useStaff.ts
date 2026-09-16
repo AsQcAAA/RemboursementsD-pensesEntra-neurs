@@ -37,9 +37,15 @@ export function useStaff() {
         setLoading(false);
         return;
       }
-      const [{ data: staffRow }, { data: memberships }, { data: teamsRows }] = await Promise.all([
-        supabase.from("staff").select("id, full_name, access_role").eq("id", user.id).single(),
-        supabase.from("team_staff").select("team_id, titre, portee").eq("staff_id", user.id),
+      const { data: staffRow } = await supabase
+        .from("staff")
+        .select("id, full_name, access_role")
+        .eq("auth_user_id", user.id)
+        .single();
+      const [{ data: memberships }, { data: teamsRows }] = await Promise.all([
+        staffRow
+          ? supabase.from("team_staff").select("team_id, titre, portee").eq("staff_id", staffRow.id)
+          : Promise.resolve({ data: [] }),
         supabase.from("teams").select("id, nom, organisation").order("nom"),
       ]);
       if (staffRow) {

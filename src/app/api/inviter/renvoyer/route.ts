@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }
 
-  const { data: profile } = await supabase.from("staff").select("access_role").eq("id", user.id).single();
+  const { data: profile } = await supabase.from("staff").select("access_role").eq("auth_user_id", user.id).single();
   if (profile?.access_role !== "direction") {
     return NextResponse.json({ error: "Seule la direction peut changer un code d'accès." }, { status: 403 });
   }
@@ -27,12 +27,17 @@ export async function POST(req: NextRequest) {
 
   const service = createServiceClient();
 
+  const { data: cible } = await service.from("staff").select("auth_user_id").eq("id", staffId).single();
+  if (!cible?.auth_user_id) {
+    return NextResponse.json({ error: "Cette personne n'a pas de compte de connexion." }, { status: 404 });
+  }
+
   const { data: existant } = await service.from("staff").select("id").eq("nip", nip).neq("id", staffId).maybeSingle();
   if (existant) {
     return NextResponse.json({ error: "Ce code d'accès est déjà utilisé par quelqu'un d'autre." }, { status: 409 });
   }
 
-  const { error: authError } = await service.auth.admin.updateUserById(staffId, {
+  const { error: authError } = await service.auth.admin.updateUserById(cible.auth_user_id, {
     password: nipToPassword(nip),
   });
   if (authError) {

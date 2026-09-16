@@ -23,19 +23,27 @@ export function useDonneesEquipe(teamId: string | null) {
   const [tournaments, setTournaments] = useState<TournamentRow[]>([]);
   const [staffAll, setStaffAll] = useState<StaffRef[]>([]);
   const [teamStaffAll, setTeamStaffAll] = useState<(TeamStaffRow & { team_id: string })[]>([]);
+  const [meStaffId, setMeStaffId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const recharger = useCallback(async () => {
     if (!teamId) return;
     setLoading(true);
-    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }] =
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }] =
       await Promise.all([
         supabase.from("venues").select("*"),
         supabase.from("games").select("*, claims(*)").eq("team_id", teamId),
         supabase.from("tournaments").select("*, tournament_days(*), claims(*)").eq("team_id", teamId),
         supabase.from("staff").select("id, full_name"),
         supabase.from("team_staff").select("staff_id, team_id, titre, portee").eq("team_id", teamId),
+        user
+          ? supabase.from("staff").select("id").eq("auth_user_id", user.id).single()
+          : Promise.resolve({ data: null }),
       ]);
+    setMeStaffId(meRow?.id ?? null);
 
     setVenues(
       Object.fromEntries(
@@ -85,7 +93,6 @@ export function useDonneesEquipe(teamId: string | null) {
     setGames((cur) => cur.map((g) => (g.id === gameId ? { ...g, claim: { present: [], driver: null, ...g.claim, ...patch } } : g)));
     const game = games.find((g) => g.id === gameId);
     const claim = { present: [], driver: null, ...game?.claim, ...patch };
-    const { data: userData } = await supabase.auth.getUser();
     await supabase.from("claims").upsert(
       {
         team_id: teamId,
@@ -93,7 +100,7 @@ export function useDonneesEquipe(teamId: string | null) {
         present_staff_ids: claim.present,
         driver_staff_id: claim.driver,
         note: claim.note ?? null,
-        updated_by: userData.user?.id,
+        updated_by: meStaffId,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "game_id" }
@@ -111,7 +118,6 @@ export function useDonneesEquipe(teamId: string | null) {
     );
     const tournoi = tournaments.find((t) => t.id === tournamentId);
     const claim = { km: null, driver: null, presence: {}, ...tournoi?.claim, ...patch };
-    const { data: userData } = await supabase.auth.getUser();
     await supabase.from("claims").upsert(
       {
         team_id: teamId,
@@ -119,7 +125,7 @@ export function useDonneesEquipe(teamId: string | null) {
         tournament_km: claim.km,
         driver_staff_id: claim.driver,
         tournament_presence: claim.presence,
-        updated_by: userData.user?.id,
+        updated_by: meStaffId,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "tournament_id" }

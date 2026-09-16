@@ -59,14 +59,16 @@ personne (toi), le site n'ayant encore personne pour t'inviter :
 2. Dans **SQL Editor**, insère ta ligne `staff` (remplace l'id par celui de l'utilisateur
    créé, visible dans la liste des utilisateurs) :
    ```sql
-   insert into staff (id, full_name, email, nip, access_role)
+   insert into staff (auth_user_id, full_name, email, nip, access_role)
    values ('<uuid-de-l-utilisateur>', 'Jean Grignon-Francke', 'jean.grignonfrancke@asdequebecaaa.com', '1701', 'direction');
    ```
 3. Connecte-toi sur le site : choisis ton nom dans la liste, code d'accès `1701`.
-4. Une fois connecté, utilise **Direction → Inviter un entraîneur** pour créer les 9
-   autres comptes — voir `scripts/roster-prevu.json` pour le rattachement
-   équipe(s)/rôle et le NIP déjà connu de chacun (les courriels réels restent à
-   obtenir). Chaque personne peut se connecter dès que son compte est créé, sans
+4. Une fois connecté, utilise **Direction → Inviter un entraîneur** (mode « Avec
+   connexion ») pour créer les 9 autres comptes de chefs/superviseurs — voir
+   `scripts/roster-prevu.json` pour le rattachement équipe(s)/rôle et le NIP déjà
+   connu de chacun (les courriels réels restent à obtenir). Les adjoints/extras
+   (mode « Adjoint / extra ») n'ont besoin que d'un nom. Chaque personne avec
+   connexion peut se connecter dès que son compte est créé, sans
    courriel à confirmer ni mot de passe à choisir.
 
 ## 5. Déploiement

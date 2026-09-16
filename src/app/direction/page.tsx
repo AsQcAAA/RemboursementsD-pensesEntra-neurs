@@ -149,6 +149,7 @@ function Stat({ k, v, accent, warn }: { k: string; v: string; accent?: boolean; 
 }
 
 function Inviter({ teams }: { teams: { id: string; nom: string; organisation: string }[] }) {
+  const [mode, setMode] = useState<"connexion" | "adjoint">("connexion");
   const [email, setEmail] = useState("");
   const [nom, setNom] = useState("");
   const [nip, setNip] = useState("");
@@ -158,7 +159,7 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
   const [sending, setSending] = useState(false);
 
   function ajouterRattachement() {
-    setRattachements((r) => [...r, { team_id: teams[0]?.id ?? "", titre: "chef", portee: "titulaire" }]);
+    setRattachements((r) => [...r, { team_id: teams[0]?.id ?? "", titre: mode === "adjoint" ? "adjoint" : "chef", portee: "titulaire" }]);
   }
   function majRattachement(i: number, patch: Partial<(typeof rattachements)[number]>) {
     setRattachements((r) => r.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
@@ -174,15 +175,18 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
     const res = await fetch("/api/inviter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, full_name: nom, nip, access_role: accessRole, memberships: rattachements }),
+      body:
+        mode === "adjoint"
+          ? JSON.stringify({ mode, full_name: nom, memberships: rattachements })
+          : JSON.stringify({ mode, email, full_name: nom, nip, access_role: accessRole, memberships: rattachements }),
     });
     setSending(false);
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setEnvoi({ kind: "error", text: data.error || "Échec de la création du compte." });
+      setEnvoi({ kind: "error", text: data.error || "Échec de la création." });
       return;
     }
-    setEnvoi({ kind: "ok", text: `Compte créé pour ${nom} — code d'accès ${nip}.` });
+    setEnvoi({ kind: "ok", text: mode === "adjoint" ? `${nom} ajouté(e).` : `Compte créé pour ${nom} — code d'accès ${nip}.` });
     setEmail("");
     setNom("");
     setNip("");
@@ -191,39 +195,68 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
 
   return (
     <form onSubmit={envoyer} className="card max-w-2xl space-y-4">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("connexion")}
+          className={`badge ${mode === "connexion" ? "bg-gold-500 text-ink-900 font-semibold" : "bg-ink-700 text-slate-200"}`}
+        >
+          Avec connexion (chef / direction)
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("adjoint")}
+          className={`badge ${mode === "adjoint" ? "bg-gold-500 text-ink-900 font-semibold" : "bg-ink-700 text-slate-200"}`}
+        >
+          Adjoint / extra (sans connexion)
+        </button>
+      </div>
+      {mode === "adjoint" && (
+        <p className="text-xs text-slate-400">
+          Personne cochable dans les listes de présence, sans accès au site. Si cette personne est déjà chef d&apos;une
+          autre équipe, utilise exactement le même nom — le compte existant sera réutilisé.
+        </p>
+      )}
+
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className="label">Nom complet</label>
           <input required className="input" value={nom} onChange={(e) => setNom(e.target.value)} />
         </div>
-        <div>
-          <label className="label">Courriel</label>
-          <input required type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+        {mode === "connexion" && (
+          <div>
+            <label className="label">Courriel</label>
+            <input required type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+        )}
+      </div>
+      {mode === "connexion" && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="label">Code d&apos;accès (4 chiffres)</label>
+            <input
+              required
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              className="input font-mono tracking-widest"
+              value={nip}
+              onChange={(e) => setNip(e.target.value.replace(/\D/g, "").slice(0, 4))}
+            />
+            <p className="text-xs text-slate-400 mt-1">C&apos;est ce code que la personne utilisera pour se connecter.</p>
+          </div>
         </div>
-      </div>
-      <div className="grid sm:grid-cols-2 gap-4">
+      )}
+      {mode === "connexion" && (
         <div>
-          <label className="label">Code d&apos;accès (4 chiffres)</label>
-          <input
-            required
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={4}
-            className="input font-mono tracking-widest"
-            value={nip}
-            onChange={(e) => setNip(e.target.value.replace(/\D/g, "").slice(0, 4))}
-          />
-          <p className="text-xs text-slate-400 mt-1">C&apos;est ce code que la personne utilisera pour se connecter.</p>
+          <label className="label">Rôle d&apos;accès</label>
+          <select className="input" value={accessRole} onChange={(e) => setAccessRole(e.target.value as "coach" | "direction")}>
+            <option value="coach">Entraîneur-chef / superviseur</option>
+            <option value="direction">Direction</option>
+          </select>
         </div>
-      </div>
-      <div>
-        <label className="label">Rôle d&apos;accès</label>
-        <select className="input" value={accessRole} onChange={(e) => setAccessRole(e.target.value as "coach" | "direction")}>
-          <option value="coach">Entraîneur-chef / superviseur</option>
-          <option value="direction">Direction</option>
-        </select>
-      </div>
+      )}
 
       <div>
         <label className="label">Équipe(s)</label>
@@ -252,7 +285,9 @@ function Inviter({ teams }: { teams: { id: string; nom: string; organisation: st
       </div>
 
       {envoi && <p className={`text-sm ${envoi.kind === "ok" ? "text-green-700" : "text-red-600"}`}>{envoi.text}</p>}
-      <button type="submit" disabled={sending} className="btn">{sending ? "Envoi..." : "Envoyer l'invitation"}</button>
+      <button type="submit" disabled={sending} className="btn">
+        {sending ? "Envoi..." : mode === "adjoint" ? "Ajouter" : "Créer le compte"}
+      </button>
     </form>
   );
 }

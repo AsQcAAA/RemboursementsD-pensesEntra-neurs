@@ -4,9 +4,11 @@ import { createServiceClient } from "@/lib/supabase/server";
 // Route publique (voir PUBLIC_PATHS dans proxy.ts) : alimente la liste
 // déroulante de l'écran de connexion par NIP. Ne renvoie que des noms — les
 // courriels restent côté serveur, utilisés uniquement par /api/connexion.
+// Exclut les adjoints/extras sans compte (auth_user_id nul) : ils ne
+// peuvent pas se connecter, inutile de les proposer sur cet écran.
 export async function GET() {
   const service = createServiceClient();
-  const { data, error } = await service.from("staff").select("id, full_name").order("full_name");
+  const { data, error } = await service.from("staff").select("id, full_name").not("auth_user_id", "is", null).order("full_name");
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

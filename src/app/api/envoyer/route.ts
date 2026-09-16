@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Équipe ou période invalide." }, { status: 400 });
   }
 
-  const [{ data: team }, { data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }] =
+  const [{ data: team }, { data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }] =
     await Promise.all([
       supabase.from("teams").select("*").eq("id", teamId).single(),
       supabase.from("venues").select("*"),
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       supabase.from("tournaments").select("*, tournament_days(*), claims(*)").eq("team_id", teamId),
       supabase.from("staff").select("id, full_name"),
       supabase.from("team_staff").select("staff_id, titre").eq("team_id", teamId),
+      supabase.from("staff").select("id").eq("auth_user_id", user.id).single(),
     ]);
 
   if (!team) {
@@ -122,7 +123,7 @@ export async function POST(req: NextRequest) {
       statut: "envoye",
       total: R.total,
       sent_at: new Date().toISOString(),
-      sent_by: user.id,
+      sent_by: meRow?.id ?? null,
       recipients: [...destinataires, ...copie],
     },
     { onConflict: "team_id,periode" }

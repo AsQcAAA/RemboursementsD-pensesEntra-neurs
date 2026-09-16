@@ -34,20 +34,25 @@ create table if not exists venues (
 );
 
 -- ============ Entraîneurs ============
--- Un compte par entraîneur-chef (et par superviseur/direction) — les
--- adjoints et extras restent des personnes cochées dans une liste, pas des
--- comptes, comme cette saison.
+-- "staff" est l'annuaire COMPLET du personnel entraîneur (chefs, adjoints,
+-- extras) — pas seulement les personnes qui se connectent. Seuls les
+-- chefs/superviseurs/direction ont un compte Supabase Auth (auth_user_id
+-- rempli) ; les adjoints et extras restent des lignes "staff" sans connexion,
+-- cochables dans la liste de présence comme n'importe qui d'autre.
 
 create table if not exists staff (
-  id uuid primary key references auth.users (id) on delete cascade,
+  id uuid primary key default gen_random_uuid(),
+  -- Rempli seulement pour les personnes qui peuvent se connecter (chefs,
+  -- superviseurs, direction). Null pour un adjoint/extra sans accès.
+  auth_user_id uuid unique references auth.users (id) on delete set null,
   full_name text not null,
-  email text not null,
+  email text,
   -- Code d'accès à 4 chiffres utilisé pour se connecter (voir src/lib/nip.ts)
-  -- — repris tel quel de l'ancien portail pour les 9 entraîneurs déjà en
-  -- poste. Pas un vrai secret (déjà visible dans le code source de l'ancien
+  -- — repris tel quel de l'ancien portail pour les entraîneurs déjà en poste.
+  -- Pas un vrai secret (déjà visible dans le code source de l'ancien
   -- portail), mais stocké quand même en clair uniquement pour que la
   -- direction puisse le consulter/communiquer, jamais utilisé seul côté
-  -- serveur : voir nipToPassword().
+  -- serveur : voir nipToPassword(). Null pour qui n'a pas de connexion.
   nip text unique,
   access_role text not null default 'coach' check (access_role in ('coach', 'direction')),
   created_at timestamptz not null default now()
@@ -185,85 +190,88 @@ alter table hotels enable row level security;
 alter table hotel_documents enable row level security;
 alter table reports enable row level security;
 
+-- Fonctions "security definer" : contournent RLS pour répondre à "qui suis-je
+-- dans staff" et "suis-je direction", sans jamais interroger "staff" sous
+-- RLS depuis une politique de "staff" elle-même (ce qui provoquerait
+-- l'erreur Postgres "infinite recursion detected in policy" — la version
+-- précédente de ce schéma faisait exactement ça).
+create or replace function public.current_staff_id()
+returns uuid language sql security definer set search_path = public stable
+as $$ select id from staff where auth_user_id = auth.uid() $$;
+
+create or replace function public.is_direction()
+returns boolean language sql security definer set search_path = public stable
+as $$ select exists (select 1 from staff where auth_user_id = auth.uid() and access_role = 'direction') $$;
+
 -- Référentiel (équipes, arénas, calendrier) : lecture pour tout entraîneur
 -- connecté à ce projet, écriture réservée à la direction.
 create policy "lecture entraîneurs - teams" on teams for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - teams" on teams for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "lecture entraîneurs - venues" on venues for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - venues" on venues for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "lecture entraîneurs - games" on games for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - games" on games for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "lecture entraîneurs - tournaments" on tournaments for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - tournaments" on tournaments for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "lecture entraîneurs - tournament_days" on tournament_days for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - tournament_days" on tournament_days for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
--- Annuaire : lecture pour tout entraîneur connecté (afficher des noms), mais
--- la création de comptes passe exclusivement par /api/inviter (clé de
--- service, contourne RLS) pour rester synchronisée avec Supabase Auth. La
--- direction peut corriger un nom après coup.
+-- Annuaire : lecture pour tout entraîneur connecté (afficher des noms, y
+-- compris les adjoints sans connexion), mais la création/modification passe
+-- exclusivement par /api/inviter (clé de service, contourne RLS) pour rester
+-- synchronisée avec Supabase Auth quand une connexion est en jeu.
 --
--- "auth.role() = 'authenticated'" plutôt que "exists (select 1 from staff
--- ...)" : dans ce projet, personne ne peut obtenir de session Supabase Auth
+-- "auth.role() = 'authenticated'" plutôt que "current_staff_id() is not
+-- null" : dans ce projet, personne ne peut obtenir de session Supabase Auth
 -- sans passer par /api/inviter (aucune inscription libre), donc les deux
--- reviennent au même — mais la seconde forme vérifie l'accès à "staff" en
--- interrogeant "staff", ce qui déclenche la politique de "staff" elle-même
--- à l'infini (Postgres : "infinite recursion detected in policy"). Toutes
--- les autres tables interrogent "staff" dans leur propre politique, donc
--- cette récursion les rendait, elles aussi, silencieusement vides.
+-- reviennent au même pour une personne qui se connecte — mais rester sur
+-- auth.role() évite tout aller-retour vers "staff" pour cette politique-ci.
 create policy "lecture entraîneurs - staff" on staff for select
   using (auth.role() = 'authenticated');
 create policy "direction corrige - staff" on staff for update
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "lecture entraîneurs - team_staff" on team_staff for select
-  using (exists (select 1 from staff s where s.id = auth.uid()));
+  using (current_staff_id() is not null);
 create policy "direction - team_staff" on team_staff for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 -- Réclamations : l'équipe titulaire lit et écrit ses propres réclamations,
 -- un superviseur les lit sans les modifier, la direction a accès complet.
 create policy "titulaire - claims" on claims for all
   using (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
     )
   )
   with check (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
     )
   );
 create policy "superviseur lecture - claims" on claims for select
   using (
     exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = claims.team_id and ts.portee = 'superviseur'
+      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'superviseur'
     )
   );
 
@@ -271,51 +279,49 @@ create policy "superviseur lecture - claims" on claims for select
 -- direction; écriture réservée à la direction (comme cette saison).
 create policy "équipe lecture - hotels" on hotels for select
   using (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
       join tournaments tr on tr.id = hotels.tournament_id
-      where ts.staff_id = auth.uid() and ts.team_id = tr.team_id
+      where ts.staff_id = current_staff_id() and ts.team_id = tr.team_id
     )
   );
 create policy "direction écrit - hotels" on hotels for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 create policy "équipe lecture - hotel_documents" on hotel_documents for select
   using (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
       join tournaments tr on tr.id = hotel_documents.tournament_id
-      where ts.staff_id = auth.uid() and ts.team_id = tr.team_id
+      where ts.staff_id = current_staff_id() and ts.team_id = tr.team_id
     )
   );
 create policy "direction écrit - hotel_documents" on hotel_documents for all
-  using (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'))
-  with check (exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction'));
+  using (is_direction()) with check (is_direction());
 
 -- Rapports : même patron que les réclamations.
 create policy "titulaire - reports" on reports for all
   using (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
     )
   )
   with check (
-    exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
+    is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
     )
   );
 create policy "superviseur lecture - reports" on reports for select
   using (
     exists (
       select 1 from team_staff ts
-      where ts.staff_id = auth.uid() and ts.team_id = reports.team_id and ts.portee = 'superviseur'
+      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'superviseur'
     )
   );
 
@@ -325,16 +331,10 @@ create policy "superviseur lecture - reports" on reports for select
 
 create policy "hotel-docs - lecture entraîneurs"
   on storage.objects for select
-  using (bucket_id = 'hotel-docs' and exists (select 1 from staff s where s.id = auth.uid()));
+  using (bucket_id = 'hotel-docs' and current_staff_id() is not null);
 create policy "hotel-docs - direction dépose"
   on storage.objects for insert
-  with check (
-    bucket_id = 'hotel-docs'
-    and exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
-  );
+  with check (bucket_id = 'hotel-docs' and is_direction());
 create policy "hotel-docs - direction supprime"
   on storage.objects for delete
-  using (
-    bucket_id = 'hotel-docs'
-    and exists (select 1 from staff s where s.id = auth.uid() and s.access_role = 'direction')
-  );
+  using (bucket_id = 'hotel-docs' and is_direction());
