@@ -252,19 +252,24 @@ create policy "direction - team_staff" on team_staff for all
 
 -- Réclamations : l'équipe titulaire lit et écrit ses propres réclamations,
 -- un superviseur les lit sans les modifier, la direction a accès complet.
+-- "titre = 'chef'" en plus de "portee = 'titulaire'" : un chef ajouté
+-- ensuite comme adjoint d'une autre équipe (voir /api/inviter, fusion par
+-- nom) garde une ligne team_staff titulaire pour cette équipe-là (pour
+-- rester cochable dans la liste de présence par le vrai chef) — sans que
+-- ça lui donne, via son propre compte, l'accès complet à cette équipe.
 create policy "titulaire - claims" on claims for all
   using (
     is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire' and ts.titre = 'chef'
     )
   )
   with check (
     is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = claims.team_id and ts.portee = 'titulaire' and ts.titre = 'chef'
     )
   );
 create policy "superviseur lecture - claims" on claims for select
@@ -307,14 +312,14 @@ create policy "titulaire - reports" on reports for all
     is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire' and ts.titre = 'chef'
     )
   )
   with check (
     is_direction()
     or exists (
       select 1 from team_staff ts
-      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire'
+      where ts.staff_id = current_staff_id() and ts.team_id = reports.team_id and ts.portee = 'titulaire' and ts.titre = 'chef'
     )
   );
 create policy "superviseur lecture - reports" on reports for select

@@ -17,7 +17,7 @@ export default function CalendrierPage() {
   const teamIdEffectif = teamId ?? equipesVisibles[0]?.id ?? null;
   const equipe = equipesVisibles.find((t) => t.id === teamIdEffectif);
   const lectureSeule =
-    !isDirection && !me?.memberships.some((m) => m.team_id === teamIdEffectif && m.portee === "titulaire");
+    !isDirection && !me?.memberships.some((m) => m.team_id === teamIdEffectif && m.portee === "titulaire" && m.titre === "chef");
   const d = useDonneesEquipe(teamIdEffectif);
   const [filtre, setFiltre] = useState<Filtre>("tous");
   const [open, setOpen] = useState<string | null>(null);

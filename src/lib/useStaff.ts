@@ -10,7 +10,7 @@ export interface Team {
 }
 export interface Membership {
   team_id: string;
-  titre: "chef" | "adjoint" | "extra" | "superviseur";
+  titre: "chef" | "adjoint" | "extra";
   portee: "titulaire" | "superviseur";
 }
 export interface Me {
@@ -59,11 +59,14 @@ export function useStaff() {
   }, []);
 
   const isDirection = me?.access_role === "direction";
-  /** Équipes visibles pour cette personne : toutes si direction, sinon les
-   * siennes (titulaire ou superviseur). */
+  /** Équipes visibles pour cette personne : toutes si direction, sinon
+   * celles dont elle est chef (accès complet) ou superviseur (lecture
+   * seule). Une ligne "adjoint"/"extra" existe seulement pour être cochée
+   * par le vrai chef de cette équipe-là — elle ne donne aucun accès à son
+   * propre compte, même si cette personne a un compte ailleurs. */
   const equipesVisibles: Team[] = isDirection
     ? teams
-    : teams.filter((t) => me?.memberships.some((m) => m.team_id === t.id));
+    : teams.filter((t) => me?.memberships.some((m) => m.team_id === t.id && (m.titre === "chef" || m.portee === "superviseur")));
   const estSuperviseur = !isDirection && (me?.memberships.some((m) => m.portee === "superviseur") ?? false);
 
   return { me, teams, equipesVisibles, isDirection, estSuperviseur, loading };
