@@ -12,10 +12,12 @@ type Element = { type: "match"; date: string; heure: string; per: string; g: Gam
 
 export default function CalendrierPage() {
   const router = useRouter();
-  const { equipesVisibles, loading: loadingStaff } = useStaff();
+  const { equipesVisibles, isDirection, me, loading: loadingStaff } = useStaff();
   const [teamId, setTeamId] = useState<string | null>(null);
   const teamIdEffectif = teamId ?? equipesVisibles[0]?.id ?? null;
   const equipe = equipesVisibles.find((t) => t.id === teamIdEffectif);
+  const lectureSeule =
+    !isDirection && !me?.memberships.some((m) => m.team_id === teamIdEffectif && m.portee === "titulaire");
   const d = useDonneesEquipe(teamIdEffectif);
   const [filtre, setFiltre] = useState<Filtre>("tous");
   const [open, setOpen] = useState<string | null>(null);
@@ -87,9 +89,16 @@ export default function CalendrierPage() {
               <div key={g.id}>
                 <LigneMatch g={g} venue={d.venues[g.venueId]} ouvert={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
                 {open === g.id && (
-                  <EditeurMatch g={g} venue={d.venues[g.venueId]} staff={staffNoms} onSave={(patch) => d.sauverClaimMatch(g.id, patch)} onClear={() => d.effacerClaimMatch(g.id)} />
+                  <EditeurMatch
+                    g={g}
+                    venue={d.venues[g.venueId]}
+                    staff={staffNoms}
+                    lectureSeule={lectureSeule}
+                    onSave={(patch) => d.sauverClaimMatch(g.id, patch)}
+                    onClear={() => d.effacerClaimMatch(g.id)}
+                  />
                 )}
-                {finPeriode && <BandeauPeriode perId={e.per} teamId={teamIdEffectif} d={d} onReviser={() => router.push("/rapports")} />}
+                {finPeriode && <BandeauPeriode perId={e.per} teamId={teamIdEffectif} d={d} lectureSeule={lectureSeule} onReviser={() => router.push("/rapports")} />}
               </div>
             );
           }
@@ -97,8 +106,10 @@ export default function CalendrierPage() {
           return (
             <div key={t.id}>
               <LigneTournoi t={t} ouvert={open === t.id} onToggle={() => setOpen(open === t.id ? null : t.id)} />
-              {open === t.id && <EditeurTournoi t={t} staff={staffNoms} onSave={(patch) => d.sauverClaimTournoi(t.id, patch)} />}
-              {finPeriode && <BandeauPeriode perId={e.per} teamId={teamIdEffectif} d={d} onReviser={() => router.push("/rapports")} />}
+              {open === t.id && (
+                <EditeurTournoi t={t} staff={staffNoms} lectureSeule={lectureSeule} onSave={(patch) => d.sauverClaimTournoi(t.id, patch)} />
+              )}
+              {finPeriode && <BandeauPeriode perId={e.per} teamId={teamIdEffectif} d={d} lectureSeule={lectureSeule} onReviser={() => router.push("/rapports")} />}
             </div>
           );
         })}
@@ -181,11 +192,12 @@ function LigneTournoi({ t, ouvert, onToggle }: { t: TournamentRow; ouvert: boole
 }
 
 function EditeurMatch({
-  g, venue, staff, onSave, onClear,
+  g, venue, staff, lectureSeule, onSave, onClear,
 }: {
   g: GameRow;
   venue: ReturnType<typeof useDonneesEquipe>["venues"][string];
   staff: { staff_id: string; nom: string; titre: string }[];
+  lectureSeule: boolean;
   onSave: (patch: { present?: string[]; driver?: string | null }) => void;
   onClear: () => void;
 }) {
@@ -207,18 +219,28 @@ function EditeurMatch({
             Plus de 2h de route ({km(venue?.km ?? 0)}) : autocar de luxe. Aucun km, seul le per diem s&apos;applique.
           </p>
         )}
-        <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2">Entraîneurs présents — {fdateLong(g.date)}</div>
+        <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2 flex items-center gap-2">
+          Entraîneurs présents — {fdateLong(g.date)}
+          {lectureSeule && <span className="badge bg-ink-700 text-slate-400 normal-case">Lecture seule</span>}
+        </div>
         <div className="space-y-px rounded-md overflow-hidden border border-ink-700">
           {staff.map((s) => {
             const on = present.includes(s.staff_id);
             return (
-              <label key={s.staff_id} className={`flex items-center gap-3 px-3 py-2 text-sm ${on ? "bg-gold-500/10" : "bg-ink-800"}`}>
-                <input type="checkbox" checked={on} onChange={() => togglePresent(s.staff_id)} className="accent-gold-500" />
+              <label key={s.staff_id} className={`flex items-center gap-3 px-3 py-2 text-sm ${on ? "bg-gold-500/10" : "bg-ink-800"} ${lectureSeule ? "opacity-70" : ""}`}>
+                <input type="checkbox" checked={on} disabled={lectureSeule} onChange={() => togglePresent(s.staff_id)} className="accent-gold-500" />
                 <span className="flex-1">{s.nom}</span>
                 <span className="text-[10px] uppercase text-slate-500">{s.titre}</span>
                 {c.kmFacturables > 0 && (
                   <label className="flex items-center gap-1 text-[11px] text-slate-400">
-                    <input type="radio" name={`drv-${g.id}`} disabled={!on} checked={driver === s.staff_id} onChange={() => onSave({ driver: s.staff_id })} className="accent-gold-500" />
+                    <input
+                      type="radio"
+                      name={`drv-${g.id}`}
+                      disabled={!on || lectureSeule}
+                      checked={driver === s.staff_id}
+                      onChange={() => onSave({ driver: s.staff_id })}
+                      className="accent-gold-500"
+                    />
                     voiture
                   </label>
                 )}
@@ -226,10 +248,12 @@ function EditeurMatch({
             );
           })}
         </div>
-        <div className="flex gap-2 mt-3">
-          <button onClick={() => onSave({ present: staff.map((s) => s.staff_id) })} className="btn-secondary text-xs py-1.5 px-3">Tout le staff</button>
-          <button onClick={onClear} className="btn-secondary text-xs py-1.5 px-3">Aucun</button>
-        </div>
+        {!lectureSeule && (
+          <div className="flex gap-2 mt-3">
+            <button onClick={() => onSave({ present: staff.map((s) => s.staff_id) })} className="btn-secondary text-xs py-1.5 px-3">Tout le staff</button>
+            <button onClick={onClear} className="btn-secondary text-xs py-1.5 px-3">Aucun</button>
+          </div>
+        )}
       </div>
       <div className="bg-ink-800 border border-ink-700 rounded-md p-4 text-sm h-fit">
         <Ligne label="Distance aller" v={km(venue?.km ?? 0)} />
@@ -248,10 +272,11 @@ function EditeurMatch({
 }
 
 function EditeurTournoi({
-  t, staff, onSave,
+  t, staff, lectureSeule, onSave,
 }: {
   t: TournamentRow;
   staff: { staff_id: string; nom: string; titre: string }[];
+  lectureSeule: boolean;
   onSave: (patch: { km?: number | null; driver?: string | null; presence?: Record<string, string[]> }) => void;
 }) {
   const c = calcTournoi(t, t.claim);
@@ -276,14 +301,25 @@ function EditeurTournoi({
               <input
                 type="number"
                 className="input"
+                disabled={lectureSeule}
                 defaultValue={t.claim?.km ?? ""}
                 onBlur={(e) => onSave({ km: e.target.value === "" ? null : Math.max(0, Number(e.target.value)) })}
               />
             </div>
             <div className="flex flex-wrap gap-2">
               {staff.map((s) => (
-                <label key={s.staff_id} className={`badge cursor-pointer ${t.claim?.driver === s.staff_id ? "bg-gold-500 text-ink-900" : "bg-ink-700 text-slate-200"}`}>
-                  <input type="radio" name={`tdrv-${t.id}`} className="hidden" checked={t.claim?.driver === s.staff_id} onChange={() => onSave({ driver: s.staff_id })} />
+                <label
+                  key={s.staff_id}
+                  className={`badge ${lectureSeule ? "cursor-default opacity-70" : "cursor-pointer"} ${t.claim?.driver === s.staff_id ? "bg-gold-500 text-ink-900" : "bg-ink-700 text-slate-200"}`}
+                >
+                  <input
+                    type="radio"
+                    name={`tdrv-${t.id}`}
+                    className="hidden"
+                    disabled={lectureSeule}
+                    checked={t.claim?.driver === s.staff_id}
+                    onChange={() => onSave({ driver: s.staff_id })}
+                  />
                   {s.nom}
                 </label>
               ))}
@@ -324,8 +360,11 @@ function EditeurTournoi({
                 {staff.map((s) => {
                   const on = (presence[j.date] ?? []).includes(s.staff_id);
                   return (
-                    <label key={s.staff_id} className={`badge cursor-pointer ${on ? "bg-gold-500/20 text-gold-300 border border-gold-700" : "bg-ink-700 text-slate-300"}`}>
-                      <input type="checkbox" className="hidden" checked={on} onChange={() => togglePresence(j.date, s.staff_id)} />
+                    <label
+                      key={s.staff_id}
+                      className={`badge ${lectureSeule ? "cursor-default opacity-70" : "cursor-pointer"} ${on ? "bg-gold-500/20 text-gold-300 border border-gold-700" : "bg-ink-700 text-slate-300"}`}
+                    >
+                      <input type="checkbox" className="hidden" disabled={lectureSeule} checked={on} onChange={() => togglePresence(j.date, s.staff_id)} />
                       {s.nom}
                     </label>
                   );
@@ -356,7 +395,15 @@ function Ligne({ label, v }: { label: string; v: string }) {
   );
 }
 
-function BandeauPeriode({ perId, teamId, d, onReviser }: { perId: string; teamId: string; d: ReturnType<typeof useDonneesEquipe>; onReviser: () => void }) {
+function BandeauPeriode({
+  perId, teamId, d, lectureSeule, onReviser,
+}: {
+  perId: string;
+  teamId: string;
+  d: ReturnType<typeof useDonneesEquipe>;
+  lectureSeule: boolean;
+  onReviser: () => void;
+}) {
   const [envoi, setEnvoi] = useState<"idle" | "envoi" | string>("idle");
   const per = PERIODES.find((p) => p.id === perId);
   if (!per) return null;
@@ -384,9 +431,11 @@ function BandeauPeriode({ perId, teamId, d, onReviser }: { perId: string; teamId
       <div className="flex-1" />
       <div className="font-mono text-lg text-gold-400">{money(R.total)}</div>
       <button onClick={onReviser} className="btn-secondary text-xs py-1.5 px-3">Réviser le rapport</button>
-      <button onClick={envoyer} disabled={!R.total || envoi === "envoi"} className="btn text-xs py-1.5 px-3">
-        {envoi === "envoi" ? "…" : "Enregistrer et envoyer"}
-      </button>
+      {!lectureSeule && (
+        <button onClick={envoyer} disabled={!R.total || envoi === "envoi"} className="btn text-xs py-1.5 px-3">
+          {envoi === "envoi" ? "…" : "Enregistrer et envoyer"}
+        </button>
+      )}
       {envoi !== "idle" && envoi !== "envoi" && <span className="text-xs text-slate-400 w-full">{envoi}</span>}
     </div>
   );
