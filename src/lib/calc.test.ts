@@ -49,22 +49,22 @@ t("Jonquière match régulier : autocar maintenu, aucun km", calcMatch(jeu({ ven
 t("Cabano : plus de 2h -> autocar", calcMatch(jeu({ venueId: "cabano" }), cabano, { present: ["a"], driver: "a" }).autocar, true);
 t("matchRemboursable() exclut le domicile et sous 40km aller", [matchRemboursable(jeu({ domicile: true }), marcSimoneau), matchRemboursable(jeu({ venueId: "bruno-verret" }), brunoVerret)], [false, false]);
 
-// Chevaliers : jamais d'autobus en semaine (journée pédagogique), peu
-// importe la distance ; la fin de semaine, autobus seulement au-delà de
-// 200 km aller — sous ce seuil, même règle qu'en semaine (voiture).
-// jeu() daté par défaut au 2027-01-31, un dimanche.
+// Chevaliers : autobus au-delà de 200 km aller, n'importe quel jour, SAUF
+// une journée pédagogique (2026-09-18 seule pour l'instant) où ce n'est
+// jamais l'autobus, peu importe la distance — voiture remboursée selon le
+// kilométrage à la place.
 t(
-  "Chevaliers, fin de semaine, >200km aller : autobus, aucun km",
+  "Chevaliers, >200km aller, jour normal : autobus, aucun km",
   calcMatch(jeu({ venueId: "jonquiere" }), jonquiere, { present: ["a"], driver: "a" }, "Chevaliers").autocar,
   true
 );
 t(
-  "Chevaliers, journée pédagogique (semaine), même trajet : voiture, km remboursé",
-  calcMatch(jeu({ venueId: "jonquiere", date: "2027-02-01" }), jonquiere, { present: ["a"], driver: "a" }, "Chevaliers").kmFacturables,
+  "Chevaliers, journée pédagogique (2026-09-18), même trajet : voiture, km remboursé",
+  calcMatch(jeu({ venueId: "jonquiere", date: "2026-09-18" }), jonquiere, { present: ["a"], driver: "a" }, "Chevaliers").kmFacturables,
   347
 );
 t(
-  "Chevaliers, fin de semaine, sous 200km aller : voiture, km remboursé",
+  "Chevaliers, sous 200km aller : voiture, km remboursé",
   calcMatch(jeu(), videotronTR, { present: ["a"], driver: "a" }, "Chevaliers").autocar,
   false
 );

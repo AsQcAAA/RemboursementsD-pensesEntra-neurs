@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStaff } from "@/lib/useStaff";
 import { useDonneesEquipe, type GameRow, type TournamentRow } from "@/lib/donnees";
-import { calcMatch, calcTournoi, matchRemboursable, money, km, fdate, fdateLong, periodeDe, PERIODES, PER_DIEM_TOURNOI } from "@/lib/calc";
+import { calcMatch, calcTournoi, matchRemboursable, money, km, fdate, fdateLong, periodeDe, PERIODES, PER_DIEM_TOURNOI, JOURS_PEDAGOGIQUES_CHEVALIERS } from "@/lib/calc";
 import { ligneDe } from "@/lib/rapports";
 
 type Filtre = "tous" | (typeof PERIODES)[number]["id"];
@@ -230,9 +230,14 @@ function EditeurMatch({
         {c.autocar && (
           <p className="text-xs bg-sky-900/30 border-l-2 border-sky-400 px-3 py-2 mb-3 text-sky-200">
             {organisation === "Chevaliers"
-              ? `Match de fin de semaine à plus de 200 km (${km(venue?.km ?? 0)}) : autobus scolaire.`
+              ? `Plus de 200 km aller (${km(venue?.km ?? 0)}) : autobus scolaire.`
               : `Plus de 2h de route (${km(venue?.km ?? 0)}) : autocar de luxe.`}{" "}
             Aucun km, seul le per diem s&apos;applique.
+          </p>
+        )}
+        {organisation === "Chevaliers" && !c.autocar && JOURS_PEDAGOGIQUES_CHEVALIERS.includes(g.date) && (
+          <p className="text-xs bg-amber-900/20 border-l-2 border-amber-500 px-3 py-2 mb-3 text-amber-200">
+            Journée pédagogique : aucun autobus offert, même au-delà de 200 km — voiture remboursée selon la distance.
           </p>
         )}
         <div className="text-[10px] uppercase tracking-wide text-slate-500 mb-2 flex items-center gap-2">
