@@ -243,6 +243,14 @@ function CarteAffilie({ a, rappels, noms, onRappeler }: { a: Affilie; rappels: R
   );
 }
 
+interface Activite {
+  cle: number;
+  type: "match" | "pratique";
+  gameId: string;
+  date: string;
+  note: string;
+}
+
 function ModalRappel({
   a, equipe, matchs, rappels, onClose, onDone,
 }: {
@@ -253,16 +261,23 @@ function ModalRappel({
   onClose: () => void;
   onDone: () => void;
 }) {
-  const [type, setType] = useState<"match" | "pratique">("match");
-  const [gameId, setGameId] = useState("");
-  const [date, setDate] = useState(aujourdhui());
-  const [note, setNote] = useState("");
+  const [compteur, setCompteur] = useState(1);
+  const [activites, setActivites] = useState<Activite[]>([{ cle: 0, type: "match", gameId: "", date: aujourdhui(), note: "" }]);
   const [envoi, setEnvoi] = useState(false);
   const [resultat, setResultat] = useState<{ ok: boolean; texte: string } | null>(null);
 
   const aVenir = matchs.filter((m) => m.date >= aujourdhui());
-  const dateEffective = type === "match" && gameId ? matchs.find((m) => m.id === gameId)?.date ?? date : date;
-  const doublon = rappels.some((r) => r.event_date === dateEffective && r.event_type === type);
+  const dateDe = (x: Activite) => (x.type === "match" && x.gameId ? matchs.find((m) => m.id === x.gameId)?.date ?? x.date : x.date);
+  const maj = (cle: number, patch: Partial<Activite>) => setActivites((l) => l.map((x) => (x.cle === cle ? { ...x, ...patch } : x)));
+  const ajouter = () => {
+    setActivites((l) => [...l, { cle: compteur, type: "match", gameId: "", date: aujourdhui(), note: "" }]);
+    setCompteur((c) => c + 1);
+  };
+
+  const cles = activites.map((x) => `${x.type}|${dateDe(x)}`);
+  const internes = new Set(cles.filter((c, i) => cles.indexOf(c) !== i));
+  const dejaRappele = (x: Activite) => rappels.some((r) => r.event_date === dateDe(x) && r.event_type === x.type);
+  const bloque = internes.size > 0 || activites.some((x) => !dateDe(x));
 
   async function enregistrer() {
     setEnvoi(true);
@@ -270,7 +285,10 @@ function ModalRappel({
     const res = await fetch("/api/affilies/rappel", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ affiliateId: a.id, type, date: dateEffective, gameId: type === "match" && gameId ? gameId : null, note }),
+      body: JSON.stringify({
+        affiliateId: a.id,
+        activites: activites.map((x) => ({ type: x.type, date: dateDe(x), gameId: x.type === "match" && x.gameId ? x.gameId : null, note: x.note })),
+      }),
     });
     const data = await res.json().catch(() => ({}));
     setEnvoi(false);
@@ -279,17 +297,19 @@ function ModalRappel({
       return;
     }
     onDone();
+    const n = data.count ?? activites.length;
+    const quoi = n > 1 ? `${n} activités enregistrées` : "Rappel enregistré";
     setResultat({
       ok: true,
       texte: data.emailSent
-        ? "Rappel enregistré — alerte envoyée à la direction."
-        : `Rappel enregistré, mais l'alerte courriel n'a pas pu partir (${data.reason ?? "erreur inconnue"}). Préviens la direction.`,
+        ? `${quoi} — alerte envoyée à la direction.`
+        : `${quoi}, mais l'alerte courriel n'a pas pu partir (${data.reason ?? "erreur inconnue"}). Préviens la direction.`,
     });
   }
 
   return (
     <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="card w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <div className="card w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div>
           <h3 className="font-bold text-lg leading-tight">Rappeler {a.nom}</h3>
           <p className="text-xs text-slate-500">{equipe} · provenance : {a.provenance ?? "—"}</p>
@@ -302,53 +322,59 @@ function ModalRappel({
           </div>
         ) : (
           <>
-            <div className="flex gap-2">
-              {(["match", "pratique"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setType(t)}
-                  className={`flex-1 rounded-md py-2 text-sm border ${type === t ? "bg-gold-500 text-ink-900 font-semibold border-gold-500" : "bg-white text-slate-600 border-slate-300"}`}
-                >
-                  {t === "match" ? "Pour un match" : "Pour une pratique"}
-                </button>
+            <div className="space-y-3">
+              {activites.map((x, i) => (
+                <div key={x.cle} className="border border-slate-300 rounded-md p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] uppercase tracking-wide text-slate-500 flex-1">Activité {i + 1}</span>
+                    {activites.length > 1 && (
+                      <button type="button" onClick={() => setActivites((l) => l.filter((y) => y.cle !== x.cle))} className="text-xs text-red-600 underline">
+                        Retirer
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {(["match", "pratique"] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => maj(x.cle, { type: t })}
+                        className={`flex-1 rounded-md py-1.5 text-sm border ${x.type === t ? "bg-gold-500 text-ink-900 font-semibold border-gold-500" : "bg-white text-slate-600 border-slate-300"}`}
+                      >
+                        {t === "match" ? "Match" : "Pratique"}
+                      </button>
+                    ))}
+                  </div>
+
+                  {x.type === "match" && (
+                    <select className="input" value={x.gameId} onChange={(e) => maj(x.cle, { gameId: e.target.value })}>
+                      <option value="">— Autre match (choisir la date) —</option>
+                      {aVenir.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {fdate(m.date)} {m.heure ?? ""} — {m.libelle}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {!(x.type === "match" && x.gameId) && (
+                    <input type="date" className="input" value={x.date} onChange={(e) => maj(x.cle, { date: e.target.value })} />
+                  )}
+                  <input className="input" placeholder="Note (optionnel) — ex. heure de pratique" value={x.note} onChange={(e) => maj(x.cle, { note: e.target.value })} />
+
+                  {internes.has(`${x.type}|${dateDe(x)}`) && <p className="text-xs text-red-600">Même type et même date qu&apos;une autre activité ci-dessus.</p>}
+                  {dejaRappele(x) && <p className="text-xs text-amber-700">Ce joueur est déjà rappelé pour cette date ({x.type}).</p>}
+                </div>
               ))}
             </div>
 
-            {type === "match" && (
-              <div>
-                <label className="label">Match</label>
-                <select className="input" value={gameId} onChange={(e) => setGameId(e.target.value)}>
-                  <option value="">— Autre match (choisir la date) —</option>
-                  {aVenir.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {fdate(m.date)} {m.heure ?? ""} — {m.libelle}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <button type="button" onClick={ajouter} className="btn-secondary text-xs py-1.5 px-3">+ Ajouter une activité</button>
 
-            {!(type === "match" && gameId) && (
-              <div>
-                <label className="label">Date de {type === "match" ? "match" : "pratique"}</label>
-                <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
-              </div>
-            )}
-
-            <div>
-              <label className="label">Note (optionnel)</label>
-              <input className="input" placeholder="Ex. : heure de pratique, blessure au gardien…" value={note} onChange={(e) => setNote(e.target.value)} />
-            </div>
-
-            {doublon && <p className="text-xs text-amber-700">Ce joueur est déjà rappelé pour cette date ({type}).</p>}
             {resultat && !resultat.ok && <p className="text-sm text-red-600">{resultat.texte}</p>}
-
-            <p className="text-[11px] text-slate-500">La direction reçoit une alerte courriel avec la date, le type et les informations du joueur.</p>
+            <p className="text-[11px] text-slate-500">La direction reçoit un seul courriel d&apos;alerte listant toutes les activités, avec les informations du joueur.</p>
             <div className="flex gap-2">
               <button onClick={onClose} className="btn-secondary flex-1">Annuler</button>
-              <button onClick={enregistrer} disabled={envoi || !dateEffective} className="btn flex-1">
-                {envoi ? "Enregistrement…" : "Enregistrer le rappel"}
+              <button onClick={enregistrer} disabled={envoi || bloque} className="btn flex-1">
+                {envoi ? "Enregistrement…" : activites.length > 1 ? `Enregistrer ${activites.length} activités` : "Enregistrer le rappel"}
               </button>
             </div>
           </>
