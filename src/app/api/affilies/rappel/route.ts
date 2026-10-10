@@ -126,10 +126,7 @@ export async function POST(req: NextRequest) {
     ["Organisation d'appartenance", affilie.provenance ?? "—"],
     ["Division / classe", [affilie.division, affilie.classe].filter(Boolean).join(" ") || "—"],
     ["Ligue", affilie.ligue ?? "—"],
-    ["Courriel(s)", affilie.emails?.length ? affilie.emails.join(", ") : "—"],
-    ["Téléphone(s)", affilie.telephones?.length ? affilie.telephones.join(", ") : "—"],
-    ["Équipe des As", equipeNom],
-    ["Rappelé par", moi.full_name],
+    ["Équipe des As où il remplace", equipeNom],
   ];
   const cellule = "padding:6px 10px;border-bottom:1px solid #ddd;vertical-align:top";
   const html = `<div style="font-family:Arial,sans-serif;max-width:620px">
