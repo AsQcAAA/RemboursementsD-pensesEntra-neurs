@@ -11,6 +11,7 @@ const TABS = [
   { href: "/", label: "Calendrier" },
   { href: "/rapports", label: "Rapports" },
 ];
+const AFFILIES_TAB = { href: "/affilies", label: "Affiliés" };
 const RECAP_TAB = { href: "/recapitulatif", label: "Récapitulatif" };
 const DIRECTION_TAB = { href: "/direction", label: "Direction" };
 
@@ -18,11 +19,12 @@ export default function Nav() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { me, isDirection, estSuperviseur } = useStaff();
+  const { me, isDirection, estSuperviseur, equipesAffilies } = useStaff();
 
   if (pathname === "/login") return null;
 
   const tabs = [...TABS];
+  if (equipesAffilies.length) tabs.push(AFFILIES_TAB);
   if (isDirection || estSuperviseur) tabs.push(RECAP_TAB);
   if (isDirection) tabs.push(DIRECTION_TAB);
 

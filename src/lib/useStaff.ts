@@ -68,6 +68,13 @@ export function useStaff() {
     ? teams
     : teams.filter((t) => me?.memberships.some((m) => m.team_id === t.id && (m.titre === "chef" || m.portee === "superviseur")));
   const estSuperviseur = !isDirection && (me?.memberships.some((m) => m.portee === "superviseur") ?? false);
+  /** Équipes des As dont cette personne gère les affiliés : le chef de
+   * l'équipe (pas un adjoint, pas un superviseur) et la direction. */
+  const equipesAffilies: Team[] = equipesVisibles.filter(
+    (t) =>
+      t.organisation === "As" &&
+      (isDirection || (me?.memberships.some((m) => m.team_id === t.id && m.titre === "chef" && m.portee === "titulaire") ?? false))
+  );
 
-  return { me, teams, equipesVisibles, isDirection, estSuperviseur, loading };
+  return { me, teams, equipesVisibles, equipesAffilies, isDirection, estSuperviseur, loading };
 }
