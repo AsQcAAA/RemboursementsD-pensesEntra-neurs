@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useStaff } from "@/lib/useStaff";
 import { useAffilies, type Affilie, type MatchOption, type Rappel } from "@/lib/affilies";
 import { fdate, fdateLong } from "@/lib/calc";
+import { lienEquipe } from "@/lib/liensEquipes";
 
 const MOIS_LONGS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
@@ -189,6 +190,7 @@ function CarteAffilie({ a, rappels, noms, onRappeler }: { a: Affilie; rappels: R
   const [histo, setHisto] = useState(false);
   const dernier = rappels[0];
   const cursus = [a.division, a.classe].filter(Boolean).join(" ");
+  const lien = lienEquipe(a);
   return (
     <div className="bg-ink-800 border border-ink-700 rounded-lg p-4 flex flex-col gap-3">
       <div className="flex items-start gap-2">
@@ -202,6 +204,13 @@ function CarteAffilie({ a, rappels, noms, onRappeler }: { a: Affilie; rappels: R
       <div className="text-xs space-y-0.5">
         <div><span className="text-slate-500">Provenance : </span>{a.provenance ?? "—"}</div>
         <div><span className="text-slate-500">Niveau : </span>{[cursus, a.ligue].filter(Boolean).join(" · ") || "—"}</div>
+        {lien && (
+          <div>
+            <a href={lien.url} target="_blank" rel="noopener noreferrer" className="text-gold-400 hover:underline">
+              {lien.libelle} ↗
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="text-xs space-y-0.5">
