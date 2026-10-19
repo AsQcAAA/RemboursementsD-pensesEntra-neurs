@@ -164,7 +164,7 @@ function corpsHtml(equipe: string, periodeNom: string, periodeMois: string, chef
     `<div style="font-size:12px;letter-spacing:.06em;color:#555">TOTAL À VERSER</div>` +
     `<div style="font-size:26px;font-weight:700;color:#0B0B0C;margin-top:2px">${esc(moneyStr(total))}</div></div>` +
     tables.map(tableHtml).join("") +
-    `<p style="color:#666;font-size:12px;margin-top:18px">Le montant est versé à l'entraîneur-chef, qui redistribue. Le même contenu est joint en PDF, prêt à imprimer.</p></div>`
+    `<p style="color:#666;font-size:12px;margin-top:18px">Chaque entraîneur recevra son dû. Le même contenu est joint en PDF, prêt à imprimer.</p></div>`
   );
 }
 
