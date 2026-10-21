@@ -88,6 +88,13 @@ export default function CalendrierPage() {
 
           if (e.type === "match") {
             const g = e.g;
+            const idsInvites = d.invitesParMatch[g.id] ?? [];
+            const staffMatch = [
+              ...staffNoms,
+              ...idsInvites
+                .filter((id) => !staffNoms.some((x) => x.staff_id === id))
+                .map((id) => ({ staff_id: id, titre: "invité", portee: "titulaire" as const, nom: d.staffAll.find((x) => x.id === id)?.full_name ?? "?" })),
+            ];
             return (
               <div key={g.id}>
                 <LigneMatch g={g} venue={d.venues[g.venueId]} organisation={organisation} ouvert={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
@@ -95,9 +102,29 @@ export default function CalendrierPage() {
                   <EditeurMatch
                     g={g}
                     venue={d.venues[g.venueId]}
-                    staff={staffNoms}
+                    staff={staffMatch}
                     organisation={organisation}
                     lectureSeule={lectureSeule}
+                    invites={idsInvites}
+                    peutInviter={organisation === "Chevaliers" && !g.domicile && !lectureSeule}
+                    onInviter={async (nom) => {
+                      const r = await d.ajouterInvite(g.id, nom);
+                      if (r.staffId) {
+                        const deja = g.claim?.present ?? [];
+                        if (!deja.includes(r.staffId)) await d.sauverClaimMatch(g.id, { present: [...deja, r.staffId] });
+                      }
+                      return r.erreur ?? null;
+                    }}
+                    onRetirerInvite={async (id) => {
+                      const err = await d.retirerInvite(g.id, id);
+                      if (!err && g.claim?.present.includes(id)) {
+                        await d.sauverClaimMatch(g.id, {
+                          present: g.claim.present.filter((x) => x !== id),
+                          driver: g.claim.driver === id ? null : g.claim.driver,
+                        });
+                      }
+                      return err;
+                    }}
                     onSave={(patch) => d.sauverClaimMatch(g.id, patch)}
                     onClear={() => d.effacerClaimMatch(g.id)}
                   />
@@ -204,19 +231,35 @@ function LigneTournoi({ t, ouvert, onToggle }: { t: TournamentRow; ouvert: boole
 }
 
 function EditeurMatch({
-  g, venue, staff, organisation, lectureSeule, onSave, onClear,
+  g, venue, staff, organisation, lectureSeule, invites, peutInviter, onInviter, onRetirerInvite, onSave, onClear,
 }: {
   g: GameRow;
   venue: ReturnType<typeof useDonneesEquipe>["venues"][string];
   staff: { staff_id: string; nom: string; titre: string }[];
   organisation: "As" | "Chevaliers";
   lectureSeule: boolean;
+  invites: string[];
+  peutInviter: boolean;
+  onInviter: (nom: string) => Promise<string | null>;
+  onRetirerInvite: (staffId: string) => Promise<string | null>;
   onSave: (patch: { present?: string[]; driver?: string | null }) => void;
   onClear: () => void;
 }) {
   const present = g.claim?.present ?? [];
   const driver = g.claim?.driver ?? null;
   const c = calcMatch(g, venue, g.claim, organisation);
+  const [nomInvite, setNomInvite] = useState("");
+  const [ajout, setAjout] = useState(false);
+  const [erreurInvite, setErreurInvite] = useState<string | null>(null);
+
+  async function inviter() {
+    setAjout(true);
+    setErreurInvite(null);
+    const err = await onInviter(nomInvite);
+    setAjout(false);
+    if (err) setErreurInvite(err);
+    else setNomInvite("");
+  }
 
   function togglePresent(id: string) {
     const next = present.includes(id) ? present.filter((x) => x !== id) : [...present, id];
@@ -252,6 +295,19 @@ function EditeurMatch({
                 <input type="checkbox" checked={on} disabled={lectureSeule} onChange={() => togglePresent(s.staff_id)} className="accent-gold-500" />
                 <span className="flex-1">{s.nom}</span>
                 <span className="text-[10px] uppercase text-slate-500">{s.titre}</span>
+                {invites.includes(s.staff_id) && !lectureSeule && (
+                  <button
+                    type="button"
+                    onClick={async (ev) => {
+                      ev.preventDefault();
+                      const err = await onRetirerInvite(s.staff_id);
+                      if (err) setErreurInvite(err);
+                    }}
+                    className="text-[11px] text-red-400 underline"
+                  >
+                    Retirer
+                  </button>
+                )}
                 {c.kmFacturables > 0 && (
                   <label className="flex items-center gap-1 text-[11px] text-slate-400">
                     <input
@@ -269,6 +325,24 @@ function EditeurMatch({
             );
           })}
         </div>
+        {peutInviter && (
+          <div className="mt-3 border border-dashed border-ink-700 rounded-md p-3 space-y-2">
+            <div className="text-[10px] uppercase tracking-wide text-slate-500">Entraîneur invité pour ce match (hors de ton staff)</div>
+            <div className="flex gap-2">
+              <input
+                className="input text-sm py-1.5"
+                placeholder="Prénom et nom"
+                value={nomInvite}
+                onChange={(ev) => setNomInvite(ev.target.value)}
+                onKeyDown={(ev) => { if (ev.key === "Enter" && nomInvite.trim().length >= 3 && !ajout) inviter(); }}
+              />
+              <button type="button" onClick={inviter} disabled={ajout || nomInvite.trim().length < 3} className="btn-secondary text-xs py-1.5 px-3 whitespace-nowrap">
+                {ajout ? "…" : "Ajouter"}
+              </button>
+            </div>
+            {erreurInvite && <p className="text-xs text-red-400">{erreurInvite}</p>}
+          </div>
+        )}
         {!lectureSeule && (
           <div className="flex gap-2 mt-3">
             <button onClick={() => onSave({ present: staff.map((s) => s.staff_id) })} className="btn-secondary text-xs py-1.5 px-3">Tout le staff</button>

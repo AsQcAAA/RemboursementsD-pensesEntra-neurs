@@ -68,12 +68,22 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
 
   const lignes: LigneRapport[] = [];
 
+  // Un entraîneur invité pour un match (hors staff de l'équipe) doit
+  // apparaître dans « Montants à verser » au même titre que les autres.
+  const assurer = (id: string) => {
+    if (!entraineurs.has(id) && nomParId.has(id)) {
+      entraineurs.set(id, { id, nom: nomParId.get(id)!, role: "Ent. invité", km: 0, repas: 0, jours: 0 });
+    }
+  };
+
   for (const g of donnees.games) {
     if (g.domicile) continue; // aucune dépense attribuable à domicile
     if (perId && periodeDe(g.date).id !== perId) continue;
     const venue = donnees.venues[g.venueId];
     const c = calcMatch(g, venue, g.claim, donnees.team.organisation as "As" | "Chevaliers");
     if (c.total <= 0) continue;
+    for (const id of g.claim?.present ?? []) assurer(id);
+    if (g.claim?.driver) assurer(g.claim.driver);
     if (c.kmMontant > 0 && g.claim?.driver && entraineurs.has(g.claim.driver)) {
       entraineurs.get(g.claim.driver)!.km += c.kmMontant;
     }

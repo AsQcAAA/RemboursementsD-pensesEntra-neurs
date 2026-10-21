@@ -24,6 +24,7 @@ export function useDonneesEquipe(teamId: string | null) {
   const [staffAll, setStaffAll] = useState<StaffRef[]>([]);
   const [teamStaffAll, setTeamStaffAll] = useState<(TeamStaffRow & { team_id: string })[]>([]);
   const [meStaffId, setMeStaffId] = useState<string | null>(null);
+  const [invitesParMatch, setInvitesParMatch] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
 
   const recharger = useCallback(async () => {
@@ -32,7 +33,7 @@ export function useDonneesEquipe(teamId: string | null) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }] =
+    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }, { data: guestRows }] =
       await Promise.all([
         supabase.from("venues").select("*"),
         supabase.from("games").select("*, claims(*)").eq("team_id", teamId),
@@ -42,8 +43,13 @@ export function useDonneesEquipe(teamId: string | null) {
         user
           ? supabase.from("staff").select("id").eq("auth_user_id", user.id).single()
           : Promise.resolve({ data: null }),
+        // Table ajoutée après coup : une erreur (pas encore créée) = aucun invité.
+        supabase.from("game_guests").select("game_id, staff_id").eq("team_id", teamId),
       ]);
     setMeStaffId(meRow?.id ?? null);
+    const inv: Record<string, string[]> = {};
+    for (const gu of guestRows ?? []) (inv[gu.game_id] ??= []).push(gu.staff_id);
+    setInvitesParMatch(inv);
 
     setVenues(
       Object.fromEntries(
@@ -89,6 +95,31 @@ export function useDonneesEquipe(teamId: string | null) {
 
   const teamStaff = teamStaffAll.filter((ts) => ts.portee !== "superviseur");
 
+  /** Entraîneur hors staff ajouté pour un match de saison à l'extérieur
+   * (Chevaliers). Retourne l'id de la personne, ou une erreur lisible. */
+  async function ajouterInvite(gameId: string, nom: string): Promise<{ staffId?: string; erreur?: string }> {
+    const res = await fetch("/api/invites-match", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId, nom }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { erreur: data.error || "Échec de l'ajout." };
+    await recharger();
+    return { staffId: data.staffId };
+  }
+
+  async function retirerInvite(gameId: string, staffId: string): Promise<string | null> {
+    const res = await fetch("/api/invites-match", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId, staffId }),
+    });
+    if (!res.ok) return ((await res.json().catch(() => ({}))).error as string) || "Échec du retrait.";
+    await recharger();
+    return null;
+  }
+
   async function sauverClaimMatch(gameId: string, patch: Partial<MatchClaim>) {
     setGames((cur) => cur.map((g) => (g.id === gameId ? { ...g, claim: { present: [], driver: null, ...g.claim, ...patch } } : g)));
     const game = games.find((g) => g.id === gameId);
@@ -133,8 +164,8 @@ export function useDonneesEquipe(teamId: string | null) {
   }
 
   return {
-    venues, games, tournaments, staffAll, teamStaff, loading,
-    recharger, sauverClaimMatch, effacerClaimMatch, sauverClaimTournoi,
+    venues, games, tournaments, staffAll, teamStaff, invitesParMatch, loading,
+    recharger, ajouterInvite, retirerInvite, sauverClaimMatch, effacerClaimMatch, sauverClaimTournoi,
   };
 }
 
