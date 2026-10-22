@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 
-// Ajoute/retire un entraîneur invité pour UN match de saison à l'extérieur
-// d'une équipe Chevaliers. Réservé au chef de l'équipe (ou à la direction).
+// Ajoute/retire un entraîneur invité (choisi dans la banque d'entraîneurs)
+// pour UN match de saison à l'extérieur d'une équipe Chevaliers. Réservé au chef de l'équipe (ou à la direction).
 // Les droits sont vérifiés ici à partir des données lues sous la session de
 // la personne (RLS), puis l'écriture passe par la clé de service parce que
 // créer une personne dans l'annuaire n'est pas permis côté navigateur.
@@ -45,31 +45,32 @@ async function contexte(gameId: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { gameId, nom } = (await req.json()) as { gameId: string; nom: string };
-  const nomPropre = (nom ?? "").replace(/\s+/g, " ").trim();
-  if (!gameId || nomPropre.length < 3 || nomPropre.length > 80) {
-    return NextResponse.json({ error: "Nom complet requis (prénom et nom)." }, { status: 400 });
-  }
+  const { gameId, staffId } = (await req.json()) as { gameId: string; staffId: string };
+  if (!gameId || !staffId) return NextResponse.json({ error: "Match et entraîneur requis." }, { status: 400 });
   const ctx = await contexte(gameId);
   if (ctx.erreur) return ctx.erreur;
 
+  // Seulement une personne déjà dans la banque d'entraîneurs : on ne crée
+  // jamais de fiche ici (une faute de frappe créerait un faux entraîneur).
   const service = createServiceClient();
-  // Même nom (sans égard à la casse) = même personne : on réutilise sa fiche
-  // plutôt que d'en créer une seconde.
-  const { data: existant } = await service.from("staff").select("id, full_name").ilike("full_name", nomPropre).limit(1).maybeSingle();
-  let staffId = existant?.id as string | undefined;
-  if (!staffId) {
-    const { data: cree, error } = await service.from("staff").insert({ full_name: nomPropre }).select("id").single();
-    if (error || !cree) return NextResponse.json({ error: error?.message ?? "Échec de la création." }, { status: 500 });
-    staffId = cree.id;
-  }
+  const { data: personne } = await service.from("staff").select("id, full_name").eq("id", staffId).maybeSingle();
+  if (!personne) return NextResponse.json({ error: "Entraîneur introuvable dans la banque d'entraîneurs." }, { status: 404 });
 
-  const { error: gErr } = await service
+  const { data: deja } = await service
+    .from("team_staff")
+    .select("id")
+    .eq("team_id", ctx.game!.team_id)
+    .eq("staff_id", staffId)
+    .neq("portee", "superviseur")
+    .maybeSingle();
+  if (deja) return NextResponse.json({ error: "Cette personne fait déjà partie du staff de l'équipe." }, { status: 400 });
+
+  const { error } = await service
     .from("game_guests")
     .upsert({ game_id: gameId, team_id: ctx.game!.team_id, staff_id: staffId, added_by: ctx.moi!.id }, { onConflict: "game_id,staff_id" });
-  if (gErr) return NextResponse.json({ error: gErr.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ ok: true, staffId, nom: existant?.full_name ?? nomPropre });
+  return NextResponse.json({ ok: true, staffId, nom: personne.full_name });
 }
 
 export async function DELETE(req: NextRequest) {

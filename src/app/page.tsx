@@ -107,8 +107,11 @@ export default function CalendrierPage() {
                     lectureSeule={lectureSeule}
                     invites={idsInvites}
                     peutInviter={organisation === "Chevaliers" && !g.domicile && !lectureSeule}
-                    onInviter={async (nom) => {
-                      const r = await d.ajouterInvite(g.id, nom);
+                    banque={d.staffAll
+                      .filter((x) => !staffMatch.some((m) => m.staff_id === x.id))
+                      .sort((a, b) => a.full_name.localeCompare(b.full_name, "fr"))}
+                    onInviter={async (staffId) => {
+                      const r = await d.ajouterInvite(g.id, staffId);
                       if (r.staffId) {
                         const deja = g.claim?.present ?? [];
                         if (!deja.includes(r.staffId)) await d.sauverClaimMatch(g.id, { present: [...deja, r.staffId] });
@@ -231,7 +234,7 @@ function LigneTournoi({ t, ouvert, onToggle }: { t: TournamentRow; ouvert: boole
 }
 
 function EditeurMatch({
-  g, venue, staff, organisation, lectureSeule, invites, peutInviter, onInviter, onRetirerInvite, onSave, onClear,
+  g, venue, staff, organisation, lectureSeule, invites, peutInviter, banque, onInviter, onRetirerInvite, onSave, onClear,
 }: {
   g: GameRow;
   venue: ReturnType<typeof useDonneesEquipe>["venues"][string];
@@ -240,7 +243,8 @@ function EditeurMatch({
   lectureSeule: boolean;
   invites: string[];
   peutInviter: boolean;
-  onInviter: (nom: string) => Promise<string | null>;
+  banque: { id: string; full_name: string }[];
+  onInviter: (staffId: string) => Promise<string | null>;
   onRetirerInvite: (staffId: string) => Promise<string | null>;
   onSave: (patch: { present?: string[]; driver?: string | null }) => void;
   onClear: () => void;
@@ -248,17 +252,17 @@ function EditeurMatch({
   const present = g.claim?.present ?? [];
   const driver = g.claim?.driver ?? null;
   const c = calcMatch(g, venue, g.claim, organisation);
-  const [nomInvite, setNomInvite] = useState("");
+  const [choixInvite, setChoixInvite] = useState("");
   const [ajout, setAjout] = useState(false);
   const [erreurInvite, setErreurInvite] = useState<string | null>(null);
 
   async function inviter() {
     setAjout(true);
     setErreurInvite(null);
-    const err = await onInviter(nomInvite);
+    const err = await onInviter(choixInvite);
     setAjout(false);
     if (err) setErreurInvite(err);
-    else setNomInvite("");
+    else setChoixInvite("");
   }
 
   function togglePresent(id: string) {
@@ -327,16 +331,15 @@ function EditeurMatch({
         </div>
         {peutInviter && (
           <div className="mt-3 border border-dashed border-ink-700 rounded-md p-3 space-y-2">
-            <div className="text-[10px] uppercase tracking-wide text-slate-500">Entraîneur invité pour ce match (hors de ton staff)</div>
+            <div className="text-[10px] uppercase tracking-wide text-slate-500">Entraîneur invité pour ce match (banque d&apos;entraîneurs)</div>
             <div className="flex gap-2">
-              <input
-                className="input text-sm py-1.5"
-                placeholder="Prénom et nom"
-                value={nomInvite}
-                onChange={(ev) => setNomInvite(ev.target.value)}
-                onKeyDown={(ev) => { if (ev.key === "Enter" && nomInvite.trim().length >= 3 && !ajout) inviter(); }}
-              />
-              <button type="button" onClick={inviter} disabled={ajout || nomInvite.trim().length < 3} className="btn-secondary text-xs py-1.5 px-3 whitespace-nowrap">
+              <select className="input text-sm py-1.5" value={choixInvite} onChange={(ev) => setChoixInvite(ev.target.value)}>
+                <option value="">— Choisir un entraîneur —</option>
+                {banque.map((x) => (
+                  <option key={x.id} value={x.id}>{x.full_name}</option>
+                ))}
+              </select>
+              <button type="button" onClick={inviter} disabled={ajout || !choixInvite} className="btn-secondary text-xs py-1.5 px-3 whitespace-nowrap">
                 {ajout ? "…" : "Ajouter"}
               </button>
             </div>

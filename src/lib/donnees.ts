@@ -95,18 +95,18 @@ export function useDonneesEquipe(teamId: string | null) {
 
   const teamStaff = teamStaffAll.filter((ts) => ts.portee !== "superviseur");
 
-  /** Entraîneur hors staff ajouté pour un match de saison à l'extérieur
-   * (Chevaliers). Retourne l'id de la personne, ou une erreur lisible. */
-  async function ajouterInvite(gameId: string, nom: string): Promise<{ staffId?: string; erreur?: string }> {
+  /** Entraîneur de la banque (hors staff de l'équipe) ajouté pour un match de
+   * saison à l'extérieur (Chevaliers). Retourne son id, ou une erreur lisible. */
+  async function ajouterInvite(gameId: string, staffId: string): Promise<{ staffId?: string; erreur?: string }> {
     const res = await fetch("/api/invites-match", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ gameId, nom }),
+      body: JSON.stringify({ gameId, staffId }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) return { erreur: data.error || "Échec de l'ajout." };
     await recharger();
-    return { staffId: data.staffId };
+    return { staffId: data.staffId as string };
   }
 
   async function retirerInvite(gameId: string, staffId: string): Promise<string | null> {
