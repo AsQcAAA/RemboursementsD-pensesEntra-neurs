@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useStaff } from "@/lib/useStaff";
 import { useDonneesMultiEquipes } from "@/lib/donnees";
 import { ligneDe } from "@/lib/rapports";
-import { calcMatch, estAutocar, money, fdateLong, fdate, PERIODES } from "@/lib/calc";
+import { calcMatch, estAutocar, money, fdateLong, PERIODES } from "@/lib/calc";
 import { createClient } from "@/lib/supabase/client";
 
 type Onglet = "tableau" | "inviter" | "logistique";
@@ -173,8 +173,8 @@ interface EnvoiRapport {
   sent_by: string | null;
 }
 
-/** Suivi des rapports : pour chaque équipe et chaque période, envoyé ou non,
- * et s'il est en retard. « Envoyé » vient de la table reports (écrite par
+/** Suivi des rapports : pour chaque équipe et chaque période,
+ * « Envoyé » ou « En cours », avec le montant. « Envoyé » vient de la table reports (écrite par
  * /api/envoyer, que l'envoi parte du calendrier ou de la page Rapports). */
 function SuiviRapports({
   teams, d, rowsTotaux,
@@ -196,46 +196,25 @@ function SuiviRapports({
       });
   }, []);
 
-  const auj = new Date();
-  const aujourdhui = `${auj.getFullYear()}-${String(auj.getMonth() + 1).padStart(2, "0")}-${String(auj.getDate()).padStart(2, "0")}`;
   const nomStaff = (id: string | null) => (id ? d.staffAll.find((s) => s.id === id)?.full_name ?? "—" : "—");
 
-  type Etat = { texte: string; classe: string; detail?: string; alerte?: boolean };
+  type Etat = { texte: string; classe: string; montant?: string };
   function etat(teamId: string, per: (typeof PERIODES)[number]): Etat {
     const envoi = envois?.find((e) => e.team_id === teamId && e.periode === per.id && e.statut === "envoye");
+    if (envoi) return { texte: "Envoyé", classe: "bg-green-900/40 text-green-300", montant: money(Number(envoi.total)) };
     const courant = rowsTotaux[teamId]?.[per.id] ?? 0;
-    if (envoi) {
-      const quand = envoi.sent_at ? new Date(envoi.sent_at).toLocaleDateString("fr-CA", { day: "numeric", month: "short" }) : "";
-      const modifie = Math.abs(Number(envoi.total) - courant) > 0.005;
-      return {
-        texte: "Envoyé",
-        classe: "bg-green-900/40 text-green-300",
-        detail: `${quand} · ${nomStaff(envoi.sent_by)} · ${money(Number(envoi.total))}${modifie ? ` — modifié depuis (${money(courant)})` : ""}`,
-        alerte: modifie,
-      };
-    }
-    if (courant <= 0) {
-      return aujourdhui > per.fin
-        ? { texte: "Rien à réclamer", classe: "bg-ink-700 text-slate-400" }
-        : { texte: "—", classe: "text-slate-600" };
-    }
-    if (aujourdhui > per.echeance) return { texte: "En retard", classe: "bg-red-900/50 text-red-300", detail: `${money(courant)} · échéance ${fdate(per.echeance)}`, alerte: true };
-    if (aujourdhui > per.fin) return { texte: "À envoyer", classe: "bg-amber-900/40 text-amber-300", detail: `${money(courant)} · avant le ${fdate(per.echeance)}`, alerte: true };
-    return { texte: "En cours", classe: "bg-sky-900/40 text-sky-200", detail: money(courant) };
+    if (courant > 0) return { texte: "En cours", classe: "bg-sky-900/40 text-sky-200", montant: money(courant) };
+    return { texte: "—", classe: "text-slate-600" };
   }
 
   const lignes = teams.map((t) => {
     const chef = (d.teamStaffParEquipe[t.id] ?? []).find((ts) => ts.titre === "chef" && ts.portee === "titulaire");
     return { t, chef: chef ? nomStaff(chef.staff_id) : "—", etats: PERIODES.map((p) => etat(t.id, p)) };
   });
-  const nbAlertes = lignes.reduce((n, l) => n + l.etats.filter((e) => e.alerte).length, 0);
 
   return (
     <div>
-      <h3 className="font-semibold mb-2">
-        Rapports envoyés
-        {envois && nbAlertes > 0 && <span className="ml-2 text-sm font-normal text-amber-400">{nbAlertes} à suivre</span>}
-      </h3>
+      <h3 className="font-semibold mb-2">Rapports envoyés</h3>
       {erreur ? (
         <p className="text-sm text-red-400">Impossible de charger le suivi ({erreur}).</p>
       ) : !envois ? (
@@ -248,9 +227,7 @@ function SuiviRapports({
                 <th className="px-3 py-2 text-left">Équipe</th>
                 <th className="px-3 py-2 text-left">Entraîneur-chef</th>
                 {PERIODES.map((p) => (
-                  <th key={p.id} className="px-3 py-2 text-left whitespace-nowrap">
-                    {p.court} <span className="normal-case text-slate-500">· {fdate(p.echeance)}</span>
-                  </th>
+                  <th key={p.id} className="px-3 py-2 text-left whitespace-nowrap">{p.court}</th>
                 ))}
               </tr>
             </thead>
@@ -264,7 +241,7 @@ function SuiviRapports({
                   {etats.map((e, i) => (
                     <td key={i} className="px-3 py-2">
                       <span className={`badge ${e.classe}`}>{e.texte}</span>
-                      {e.detail && <div className="text-[11px] text-slate-400 mt-1">{e.detail}</div>}
+                      {e.montant && <div className="text-xs font-mono text-slate-300 mt-1">{e.montant}</div>}
                     </td>
                   ))}
                 </tr>
@@ -273,10 +250,6 @@ function SuiviRapports({
           </table>
         </div>
       )}
-      <p className="text-[11px] text-slate-500 mt-2">
-        « En retard » : la date limite est passée et rien n&apos;a été envoyé alors qu&apos;il y a des montants. « À envoyer » : la période est terminée, l&apos;échéance approche.
-        « Modifié depuis » : des présences ont changé après l&apos;envoi.
-      </p>
     </div>
   );
 }
