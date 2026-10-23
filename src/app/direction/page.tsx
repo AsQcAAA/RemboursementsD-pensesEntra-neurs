@@ -41,7 +41,11 @@ export default function DirectionPage() {
   );
 }
 
-function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organisation: string }[]; d: ReturnType<typeof useDonneesMultiEquipes> }) {
+type FiltreOrg = "tous" | "As" | "Chevaliers";
+
+function TableauDeBord({ teams: toutes, d }: { teams: { id: string; nom: string; organisation: string }[]; d: ReturnType<typeof useDonneesMultiEquipes> }) {
+  const [filtre, setFiltre] = useState<FiltreOrg>("tous");
+  const teams = filtre === "tous" ? toutes : toutes.filter((t) => t.organisation === filtre);
   const rows = teams.map((t) => {
     const donnees = {
       team: t,
@@ -74,9 +78,10 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
   const totalAs = rows.filter((r) => r.t.organisation === "As").reduce((s, r) => s + r.R.total, 0);
   const totalChevaliers = rows.filter((r) => r.t.organisation === "Chevaliers").reduce((s, r) => s + r.R.total, 0);
 
-  // Détecteur de doubles réclamations : même entraîneur, même jour, équipes différentes.
+  // Détecteur de doubles réclamations : même entraîneur, même jour, équipes
+  // différentes — toujours sur toutes les équipes, peu importe le filtre.
   const parJour: Record<string, Record<string, string[]>> = {};
-  for (const t of teams) {
+  for (const t of toutes) {
     for (const g of d.gamesParEquipe[t.id] ?? []) {
       if (!g.claim || calcMatch(g, d.venues[g.venueId], g.claim, t.organisation as "As" | "Chevaliers").total <= 0) continue;
       for (const id of g.claim.present) {
@@ -98,14 +103,32 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
 
   return (
     <div className="space-y-6">
+      <div className="flex gap-2 flex-wrap">
+        {(
+          [
+            ["As", "As"],
+            ["Chevaliers", "Chevaliers"],
+            ["tous", "Toutes équipes confondues"],
+          ] as [FiltreOrg, string][]
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => setFiltre(id)}
+            className={`rounded-full px-3.5 py-1.5 text-xs ${filtre === id ? "bg-gold-500 text-ink-900 font-semibold" : "bg-ink-800 text-slate-400 border border-ink-700"}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-ink-700 border border-ink-700 rounded-lg overflow-hidden">
         <Stat k="Équipes" v={String(teams.length)} />
         <Stat k="Doubles réclamations" v={String(conflits.length)} warn={conflits.length > 0} />
-        <Stat k="Total As" v={money(totalAs)} accent />
-        <Stat k="Total Chevaliers" v={money(totalChevaliers)} accent />
+        {filtre !== "Chevaliers" && <Stat k="Total As" v={money(totalAs)} accent />}
+        {filtre !== "As" && <Stat k="Total Chevaliers" v={money(totalChevaliers)} accent />}
       </div>
       <div className="grid grid-cols-1 gap-px bg-ink-700 border border-ink-700 rounded-lg overflow-hidden">
-        <Stat k="Engagement total (As + Chevaliers)" v={money(grand)} accent />
+        <Stat k={filtre === "tous" ? "Engagement total (As + Chevaliers)" : `Engagement total — ${filtre}`} v={money(grand)} accent />
       </div>
 
       <SuiviRapports teams={teams} d={d} rowsTotaux={totauxParPeriode} />
