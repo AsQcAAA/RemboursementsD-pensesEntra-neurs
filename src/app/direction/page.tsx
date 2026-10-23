@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStaff } from "@/lib/useStaff";
 import { useDonneesMultiEquipes } from "@/lib/donnees";
 import { ligneDe } from "@/lib/rapports";
-import { calcMatch, estAutocar, money, fdateLong } from "@/lib/calc";
+import { calcMatch, estAutocar, money, fdateLong, fdate, PERIODES } from "@/lib/calc";
 import { createClient } from "@/lib/supabase/client";
 
 type Onglet = "tableau" | "inviter" | "logistique";
@@ -53,6 +53,23 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
     };
     return { t, R: ligneDe(donnees), nbGames: (d.gamesParEquipe[t.id] ?? []).length };
   });
+  const totauxParPeriode: Record<string, Record<string, number>> = {};
+  for (const t of teams) {
+    totauxParPeriode[t.id] = {};
+    for (const p of PERIODES) {
+      totauxParPeriode[t.id][p.id] = ligneDe(
+        {
+          team: t,
+          games: d.gamesParEquipe[t.id] ?? [],
+          tournaments: d.tournamentsParEquipe[t.id] ?? [],
+          venues: d.venues,
+          staff: d.staffAll,
+          teamStaff: (d.teamStaffParEquipe[t.id] ?? []).map((ts) => ({ staff_id: ts.staff_id, titre: ts.titre, portee: ts.portee })),
+        },
+        p.id
+      ).total;
+    }
+  }
   const grand = rows.reduce((s, r) => s + r.R.total, 0);
   const totalAs = rows.filter((r) => r.t.organisation === "As").reduce((s, r) => s + r.R.total, 0);
   const totalChevaliers = rows.filter((r) => r.t.organisation === "Chevaliers").reduce((s, r) => s + r.R.total, 0);
@@ -90,6 +107,8 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
       <div className="grid grid-cols-1 gap-px bg-ink-700 border border-ink-700 rounded-lg overflow-hidden">
         <Stat k="Engagement total (As + Chevaliers)" v={money(grand)} accent />
       </div>
+
+      <SuiviRapports teams={teams} d={d} rowsTotaux={totauxParPeriode} />
 
       <div className="overflow-x-auto border border-ink-700 rounded-md">
         <table className="w-full text-sm">
@@ -141,6 +160,123 @@ function TableauDeBord({ teams, d }: { teams: { id: string; nom: string; organis
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+interface EnvoiRapport {
+  team_id: string;
+  periode: string;
+  statut: string;
+  total: number;
+  sent_at: string | null;
+  sent_by: string | null;
+}
+
+/** Suivi des rapports : pour chaque équipe et chaque période, envoyé ou non,
+ * et s'il est en retard. « Envoyé » vient de la table reports (écrite par
+ * /api/envoyer, que l'envoi parte du calendrier ou de la page Rapports). */
+function SuiviRapports({
+  teams, d, rowsTotaux,
+}: {
+  teams: { id: string; nom: string; organisation: string }[];
+  d: ReturnType<typeof useDonneesMultiEquipes>;
+  rowsTotaux: Record<string, Record<string, number>>;
+}) {
+  const [envois, setEnvois] = useState<EnvoiRapport[] | null>(null);
+  const [erreur, setErreur] = useState<string | null>(null);
+
+  useEffect(() => {
+    createClient()
+      .from("reports")
+      .select("team_id, periode, statut, total, sent_at, sent_by")
+      .then(({ data, error }) => {
+        if (error) setErreur(error.message);
+        else setEnvois((data ?? []) as EnvoiRapport[]);
+      });
+  }, []);
+
+  const auj = new Date();
+  const aujourdhui = `${auj.getFullYear()}-${String(auj.getMonth() + 1).padStart(2, "0")}-${String(auj.getDate()).padStart(2, "0")}`;
+  const nomStaff = (id: string | null) => (id ? d.staffAll.find((s) => s.id === id)?.full_name ?? "—" : "—");
+
+  type Etat = { texte: string; classe: string; detail?: string; alerte?: boolean };
+  function etat(teamId: string, per: (typeof PERIODES)[number]): Etat {
+    const envoi = envois?.find((e) => e.team_id === teamId && e.periode === per.id && e.statut === "envoye");
+    const courant = rowsTotaux[teamId]?.[per.id] ?? 0;
+    if (envoi) {
+      const quand = envoi.sent_at ? new Date(envoi.sent_at).toLocaleDateString("fr-CA", { day: "numeric", month: "short" }) : "";
+      const modifie = Math.abs(Number(envoi.total) - courant) > 0.005;
+      return {
+        texte: "Envoyé",
+        classe: "bg-green-900/40 text-green-300",
+        detail: `${quand} · ${nomStaff(envoi.sent_by)} · ${money(Number(envoi.total))}${modifie ? ` — modifié depuis (${money(courant)})` : ""}`,
+        alerte: modifie,
+      };
+    }
+    if (courant <= 0) {
+      return aujourdhui > per.fin
+        ? { texte: "Rien à réclamer", classe: "bg-ink-700 text-slate-400" }
+        : { texte: "—", classe: "text-slate-600" };
+    }
+    if (aujourdhui > per.echeance) return { texte: "En retard", classe: "bg-red-900/50 text-red-300", detail: `${money(courant)} · échéance ${fdate(per.echeance)}`, alerte: true };
+    if (aujourdhui > per.fin) return { texte: "À envoyer", classe: "bg-amber-900/40 text-amber-300", detail: `${money(courant)} · avant le ${fdate(per.echeance)}`, alerte: true };
+    return { texte: "En cours", classe: "bg-sky-900/40 text-sky-200", detail: money(courant) };
+  }
+
+  const lignes = teams.map((t) => {
+    const chef = (d.teamStaffParEquipe[t.id] ?? []).find((ts) => ts.titre === "chef" && ts.portee === "titulaire");
+    return { t, chef: chef ? nomStaff(chef.staff_id) : "—", etats: PERIODES.map((p) => etat(t.id, p)) };
+  });
+  const nbAlertes = lignes.reduce((n, l) => n + l.etats.filter((e) => e.alerte).length, 0);
+
+  return (
+    <div>
+      <h3 className="font-semibold mb-2">
+        Rapports envoyés
+        {envois && nbAlertes > 0 && <span className="ml-2 text-sm font-normal text-amber-400">{nbAlertes} à suivre</span>}
+      </h3>
+      {erreur ? (
+        <p className="text-sm text-red-400">Impossible de charger le suivi ({erreur}).</p>
+      ) : !envois ? (
+        <p className="text-sm text-slate-500">Chargement...</p>
+      ) : (
+        <div className="overflow-x-auto border border-ink-700 rounded-md">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-ink-700 text-[11px] uppercase tracking-wide text-slate-400">
+                <th className="px-3 py-2 text-left">Équipe</th>
+                <th className="px-3 py-2 text-left">Entraîneur-chef</th>
+                {PERIODES.map((p) => (
+                  <th key={p.id} className="px-3 py-2 text-left whitespace-nowrap">
+                    {p.court} <span className="normal-case text-slate-500">· {fdate(p.echeance)}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {lignes.map(({ t, chef, etats }) => (
+                <tr key={t.id} className="border-t border-ink-700 align-top">
+                  <td className="px-3 py-2 font-semibold whitespace-nowrap">
+                    {t.nom} <span className="text-[10px] font-normal text-slate-500">{t.organisation}</span>
+                  </td>
+                  <td className="px-3 py-2 text-slate-300 whitespace-nowrap">{chef}</td>
+                  {etats.map((e, i) => (
+                    <td key={i} className="px-3 py-2">
+                      <span className={`badge ${e.classe}`}>{e.texte}</span>
+                      {e.detail && <div className="text-[11px] text-slate-400 mt-1">{e.detail}</div>}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="text-[11px] text-slate-500 mt-2">
+        « En retard » : la date limite est passée et rien n&apos;a été envoyé alors qu&apos;il y a des montants. « À envoyer » : la période est terminée, l&apos;échéance approche.
+        « Modifié depuis » : des présences ont changé après l&apos;envoi.
+      </p>
     </div>
   );
 }

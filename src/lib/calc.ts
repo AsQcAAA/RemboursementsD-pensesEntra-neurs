@@ -214,12 +214,12 @@ export function fdateLong(iso: string): string {
   return `${JOURS_SEMAINE[dt.getDay()]} ${d} ${MOIS[m - 1]} ${y}`;
 }
 
-/** Les 4 périodes de rapport de la saison. */
+/** Les 4 périodes de rapport de la saison (echeance = date limite de remise, ISO). */
 export const PERIODES = [
-  { id: "r1", court: "R1", nom: "Rapport 1", mois: "Août · septembre · octobre", debut: "2026-08-01", fin: "2026-10-31", remis: "fin octobre 2026" },
-  { id: "r2", court: "R2", nom: "Rapport 2", mois: "Novembre · décembre", debut: "2026-11-01", fin: "2026-12-31", remis: "mi-décembre 2026" },
-  { id: "r3", court: "R3", nom: "Rapport 3", mois: "Janvier · février", debut: "2027-01-01", fin: "2027-02-28", remis: "fin février 2027" },
-  { id: "r4", court: "R4", nom: "Rapport 4", mois: "Mars · avril", debut: "2027-03-01", fin: "2027-04-30", remis: "fin avril 2027" },
+  { id: "r1", echeance: "2026-10-31", court: "R1", nom: "Rapport 1", mois: "Août · septembre · octobre", debut: "2026-08-01", fin: "2026-10-31", remis: "fin octobre 2026" },
+  { id: "r2", echeance: "2026-12-15", court: "R2", nom: "Rapport 2", mois: "Novembre · décembre", debut: "2026-11-01", fin: "2026-12-31", remis: "mi-décembre 2026" },
+  { id: "r3", echeance: "2027-02-28", court: "R3", nom: "Rapport 3", mois: "Janvier · février", debut: "2027-01-01", fin: "2027-02-28", remis: "fin février 2027" },
+  { id: "r4", echeance: "2027-04-30", court: "R4", nom: "Rapport 4", mois: "Mars · avril", debut: "2027-03-01", fin: "2027-04-30", remis: "fin avril 2027" },
 ] as const;
 
 export function periodeDe(dateISO: string) {
