@@ -3,7 +3,7 @@
 // le PDF et le courriel — ils ne peuvent plus diverger.
 import {
   calcMatch, calcTournoi, money, km, fdate, periodeDe, PERIODES,
-  TAUX_KM, PER_DIEM_MATCH, PER_DIEM_TOURNOI,
+  TAUX_KM, PER_DIEM_MATCH, perDiemTournoi,
   type Venue, type Game, type Tournament, type MatchClaim, type TournamentClaim,
 } from "./calc";
 
@@ -46,6 +46,11 @@ export interface DonneesRapport {
   teamStaff: TeamStaffRow[]; // titre par personne, pour cette équipe
 }
 
+/** « 82,50 $ par entraîneur par jour » ou, si plusieurs tarifs, « 82,50 $ ou 27,50 $ … ». */
+function libelleTarifs(tarifs: number[]): string {
+  return (tarifs.length ? tarifs.map(money).join(" ou ") : money(82.5)) + " par entraîneur par jour";
+}
+
 function libelleMatch(g: Game): string {
   return (g.domicile ? "vs " : "@ ") + g.adversaire;
 }
@@ -67,6 +72,7 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
   }
 
   const lignes: LigneRapport[] = [];
+  const tarifsTournoi = new Set<number>();
 
   // Un entraîneur invité pour un match (hors staff de l'équipe) doit
   // apparaître dans « Montants à verser » au même titre que les autres.
@@ -116,12 +122,13 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
       entraineurs.get(t.claim.driver)!.km += c.kmMontant;
     }
     if (t.exterieur) {
+      if (c.repas > 0) tarifsTournoi.add(perDiemTournoi(t));
       const vus = new Set<string>();
       for (const j of t.jours) {
         for (const id of t.claim?.presence?.[j.date] ?? []) {
           const e = entraineurs.get(id);
           if (e) {
-            e.repas += PER_DIEM_TOURNOI;
+            e.repas += perDiemTournoi(t);
             e.jours += 1;
           }
           vus.add(id);
@@ -152,6 +159,7 @@ export function ligneDe(donnees: DonneesRapport, perId?: string) {
     km: lignes.reduce((s, x) => s + x.km, 0),
     repas: lignes.reduce((s, x) => s + x.repas, 0),
     total: lignes.reduce((s, x) => s + x.total, 0),
+    tarifsTournoi: [...tarifsTournoi].sort((a, b) => b - a),
   };
   void roleParId;
 }
@@ -180,7 +188,7 @@ export function tableauxRapport(donnees: DonneesRapport, perId?: string): { R: R
   const postes: string[][] = [];
   if (R.km) postes.push(["Kilométrage", String(TAUX_KM).replace(".", ",") + " $/km", money(R.km)]);
   if (sommeM.repas) postes.push(["Per diem — matchs", money(PER_DIEM_MATCH) + " par entraîneur", money(sommeM.repas)]);
-  if (sommeT.repas) postes.push(["Per diem — tournois", money(PER_DIEM_TOURNOI) + " par entraîneur par jour", money(sommeT.repas)]);
+  if (sommeT.repas) postes.push(["Per diem — tournois", libelleTarifs(R.tarifsTournoi), money(sommeT.repas)]);
 
   const tables: TableauRapport[] = [
     {
@@ -229,9 +237,11 @@ export function recapDe(equipes: (DonneesRapport & { chefNom: string })[]): { ta
   let kmTot = 0;
   let repasMTot = 0;
   let repasTTot = 0;
+  const tarifsTot = new Set<number>();
 
   for (const eq of equipes) {
     const global = ligneDe(eq);
+    for (const x of global.tarifsTournoi) tarifsTot.add(x);
     const matchs = global.lignes.filter((l) => l.type === "match");
     const tournois = global.lignes.filter((l) => l.type === "tournoi");
     kmTot += global.km;
@@ -288,7 +298,7 @@ export function recapDe(equipes: (DonneesRapport & { chefNom: string })[]): { ta
       rows: [
         ["Kilométrage", "0,54 $/km", money(kmTot)],
         ["Per diem — matchs", money(PER_DIEM_MATCH) + " par entraîneur", money(repasMTot)],
-        ["Per diem — tournois", money(PER_DIEM_TOURNOI) + " par entraîneur par jour", money(repasTTot)],
+        ["Per diem — tournois", libelleTarifs([...tarifsTot].sort((a, b) => b - a)), money(repasTTot)],
       ],
       foot: ["Total", "", money(total)],
     },

@@ -441,3 +441,6 @@ create policy "équipe lecture - game_guests" on game_guests for select
       where ts.staff_id = current_staff_id() and ts.team_id = game_guests.team_id
     )
   );
+-- Per diem journalier propre à un tournoi (par entraîneur et par jour).
+-- Null = tarif standard de 82,50 $ (PER_DIEM_TOURNOI dans src/lib/calc.ts).
+alter table tournaments add column if not exists per_diem_jour numeric;

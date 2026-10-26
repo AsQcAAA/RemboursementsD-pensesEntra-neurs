@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStaff } from "@/lib/useStaff";
 import { useDonneesEquipe, type GameRow, type TournamentRow } from "@/lib/donnees";
-import { calcMatch, calcTournoi, matchRemboursable, money, km, fdate, fdateLong, periodeDe, PERIODES, PER_DIEM_TOURNOI, JOURS_PEDAGOGIQUES_CHEVALIERS } from "@/lib/calc";
+import { calcMatch, calcTournoi, matchRemboursable, money, km, fdate, fdateLong, periodeDe, PERIODES, perDiemTournoi, JOURS_PEDAGOGIQUES_CHEVALIERS } from "@/lib/calc";
 import { ligneDe } from "@/lib/rapports";
 
 type Filtre = "tous" | (typeof PERIODES)[number]["id"];
@@ -223,7 +223,7 @@ function LigneTournoi({ t, ouvert, onToggle }: { t: TournamentRow; ouvert: boole
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-sm text-gold-400 truncate">{t.nom}</div>
         <div className="text-xs text-slate-500 truncate">
-          {t.ville} {t.exterieur ? "" : "· local, aucun per diem"} {t.optionnel && !t.debut ? "· en option" : ""}
+          {t.ville} {t.exterieur ? "" : "· aucun per diem, kilométrage seulement"} {t.optionnel && !t.debut ? "· en option" : ""}
         </div>
       </div>
       <div className="text-right shrink-0">
@@ -435,7 +435,7 @@ function EditeurTournoi({
 
       {!t.exterieur && (
         <p className="text-xs bg-ink-800 border-l-2 border-sky-400 px-3 py-2 text-slate-300">
-          <b>Tournoi à domicile.</b> Aucun per diem, aucune présence à relever.
+          <b>Aucun per diem pour ce tournoi.</b> Voiture et kilométrage seulement, aucune présence à relever.
         </p>
       )}
 
@@ -448,7 +448,7 @@ function EditeurTournoi({
                 <b className="text-sm">{fdateLong(j.date)}</b>
                 <span className="flex-1" />
                 <span className="font-mono text-xs text-slate-400">
-                  {n} présent{n > 1 ? "s" : ""} · {money(n * PER_DIEM_TOURNOI)}
+                  {n} présent{n > 1 ? "s" : ""} · {money(n * perDiemTournoi(t))}
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">

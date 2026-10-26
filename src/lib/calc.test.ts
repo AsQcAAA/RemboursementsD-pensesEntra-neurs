@@ -81,6 +81,12 @@ const peeWee: Tournament = { id: "pw", teamId: "m13aaae", nom: "Tournoi Pee-Wee"
 t("St-Augustin (domicile) : 168km -80 payés à 1 personne", calcTournoi(stAugustin, { km: 168, driver: "a", presence: {} }).kmMontant, +((168 - 80) * 0.54).toFixed(2));
 t("St-Augustin (domicile) : aucun per diem malgré présences", calcTournoi(stAugustin, { km: 168, driver: "a", presence: { "2026-11-06": ["a", "b", "c"] } }).repas, 0);
 t("St-Jérôme (extérieur) : per diem sur 2 jours", calcTournoi(stJerome, { km: 600, driver: "a", presence: { "2027-02-05": ["a", "b"], "2027-02-06": ["a", "b", "c"] } }).repas, 5 * 82.5);
+const beauceville: Tournament = { id: "bv", teamId: "m15d3", nom: "Tournoi de Beauceville", ville: "Beauceville", debut: "2026-11-20", fin: "2026-11-22", exterieur: true, caseKm: true, optionnel: false, indice: null, perDiemJour: 27.5, jours: joursOfferts("2026-11-20", "2026-11-22") };
+t("Tarif propre au tournoi : 27,50 $ par jour (2 jours x 2 entraîneurs)", calcTournoi(beauceville, { km: 300, driver: "a", presence: { "2026-11-20": ["a", "b"], "2026-11-21": ["a", "b"] } }).repas, 4 * 27.5);
+t("Tarif propre au tournoi : le km se paie une fois", calcTournoi(beauceville, { km: 300, driver: "a", presence: {} }).kmMontant, +((300 - 80) * 0.54).toFixed(2));
+const sansPerDiem: Tournament = { ...stJerome, id: "sp", exterieur: false };
+t("Voiture + km seulement : aucun per diem malgré présences", calcTournoi(sansPerDiem, { km: 300, driver: "a", presence: { "2027-02-05": ["a", "b"] } }).repas, 0);
+t("Voiture + km seulement : km payé à un seul conducteur", calcTournoi(sansPerDiem, { km: 300, driver: "a", presence: {} }).kmMontant, +((300 - 80) * 0.54).toFixed(2));
 t("Pee-Wee : sans case km, rien même avec présence déclarée", calcTournoi(peeWee, { km: 500, driver: "a", presence: {} }).total, 0);
 
 t("mercredi jamais offert (Waterloo débute un mercredi)", joursOfferts("2027-01-27", "2027-01-31").map((j) => j.date), ["2027-01-28", "2027-01-29", "2027-01-30", "2027-01-31"]);

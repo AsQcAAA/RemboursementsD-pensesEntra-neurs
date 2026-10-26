@@ -133,7 +133,9 @@ export interface Tournament {
   ville: string;
   debut: string | null;
   fin: string | null;
-  exterieur: boolean; // false = à domicile : aucun per diem, aucune présence à relever
+  exterieur: boolean; // false = aucun per diem, aucune présence à relever (tournoi à domicile, ou voiture + kilométrage seulement)
+  /** Per diem par entraîneur et par jour pour ce tournoi ; absent = tarif standard (PER_DIEM_TOURNOI). */
+  perDiemJour?: number | null;
   caseKm: boolean; // false = aucun kilométrage réclamable (ex. Pee-Wee M13)
   optionnel: boolean;
   indice: string | null;
@@ -145,6 +147,11 @@ export interface TournamentClaim {
   driver: string | null;
   /** date ISO -> ids présents ce jour-là (uniquement pertinent si exterieur) */
   presence: Record<string, string[]>;
+}
+
+/** Per diem journalier d'un tournoi : son tarif propre s'il en a un, sinon le tarif standard. */
+export function perDiemTournoi(t: Pick<Tournament, "perDiemJour">): number {
+  return t.perDiemJour ?? PER_DIEM_TOURNOI;
 }
 
 export interface TournamentCalc {
@@ -172,7 +179,7 @@ export function calcTournoi(t: Tournament, claim: TournamentClaim | null): Tourn
       if (n > 0) {
         jours++;
         presences += n;
-        repas += n * PER_DIEM_TOURNOI;
+        repas += n * perDiemTournoi(t);
       }
     }
   }

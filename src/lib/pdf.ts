@@ -98,7 +98,7 @@ export function genererPdfRapport(
   doc.setTextColor(120, 124, 130);
   doc.text(
     "Point de repère : Aréna Duberger, Québec. Franchise de 80 km aller-retour, puis 0,54 $/km pour une seule voiture. " +
-      "Per diem de 27,50 $ par entraîneur présent à un match, 82,50 $ par entraîneur par jour de tournoi à l'extérieur. " +
+      "Per diem de 27,50 $ par entraîneur présent à un match, 82,50 $ par entraîneur par jour de tournoi à l'extérieur (27,50 $ pour certains tournois). " +
       "Chaque entraîneur recevra son dû.",
     36,
     y + 26,

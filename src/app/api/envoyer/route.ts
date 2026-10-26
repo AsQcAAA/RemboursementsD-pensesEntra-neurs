@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     const c = Array.isArray(t.claims) ? t.claims[0] : t.claims;
     return {
       id: t.id, teamId: t.team_id, nom: t.nom, ville: t.ville, debut: t.debut, fin: t.fin,
-      exterieur: t.exterieur, caseKm: t.case_km, optionnel: t.optionnel, indice: t.indice,
+      exterieur: t.exterieur, caseKm: t.case_km, optionnel: t.optionnel, indice: t.indice, perDiemJour: t.per_diem_jour != null ? Number(t.per_diem_jour) : null,
       jours: (t.tournament_days ?? [])
         .map((j: { jour_date: string; statut: "office" | "option" }) => ({ date: j.jour_date, statut: j.statut }))
         .sort((a: { date: string }, b: { date: string }) => (a.date < b.date ? -1 : 1)),
