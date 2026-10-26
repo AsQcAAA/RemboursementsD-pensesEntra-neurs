@@ -108,7 +108,7 @@ export default function CalendrierPage() {
                     invites={idsInvites}
                     peutInviter={organisation === "Chevaliers" && !g.domicile && !lectureSeule}
                     banque={d.staffAll
-                      .filter((x) => !staffMatch.some((m) => m.staff_id === x.id))
+                      .filter((x) => d.idsChevaliers.includes(x.id) && !staffMatch.some((m) => m.staff_id === x.id))
                       .sort((a, b) => a.full_name.localeCompare(b.full_name, "fr"))}
                     onInviter={async (staffId) => {
                       const r = await d.ajouterInvite(g.id, staffId);
@@ -331,7 +331,7 @@ function EditeurMatch({
         </div>
         {peutInviter && (
           <div className="mt-3 border border-dashed border-ink-700 rounded-md p-3 space-y-2">
-            <div className="text-[10px] uppercase tracking-wide text-slate-500">Entraîneur invité pour ce match (banque d&apos;entraîneurs)</div>
+            <div className="text-[10px] uppercase tracking-wide text-slate-500">Entraîneur invité pour ce match (entraîneurs des Chevaliers)</div>
             <div className="flex gap-2">
               <select className="input text-sm py-1.5" value={choixInvite} onChange={(ev) => setChoixInvite(ev.target.value)}>
                 <option value="">— Choisir un entraîneur —</option>

@@ -50,11 +50,22 @@ export async function POST(req: NextRequest) {
   const ctx = await contexte(gameId);
   if (ctx.erreur) return ctx.erreur;
 
-  // Seulement une personne déjà dans la banque d'entraîneurs : on ne crée
+  // Seulement une personne déjà dans la banque d'entraîneurs, et rattachée à
+  // une équipe Chevaliers : on ne crée
   // jamais de fiche ici (une faute de frappe créerait un faux entraîneur).
   const service = createServiceClient();
   const { data: personne } = await service.from("staff").select("id, full_name").eq("id", staffId).maybeSingle();
   if (!personne) return NextResponse.json({ error: "Entraîneur introuvable dans la banque d'entraîneurs." }, { status: 404 });
+
+  const { data: chev } = await service
+    .from("team_staff")
+    .select("id, teams!inner(organisation)")
+    .eq("staff_id", staffId)
+    .eq("teams.organisation", "Chevaliers")
+    .limit(1);
+  if (!chev?.length) {
+    return NextResponse.json({ error: "Cette personne n'est pas un entraîneur des Chevaliers." }, { status: 400 });
+  }
 
   const { data: deja } = await service
     .from("team_staff")

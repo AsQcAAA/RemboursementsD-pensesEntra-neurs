@@ -25,6 +25,7 @@ export function useDonneesEquipe(teamId: string | null) {
   const [teamStaffAll, setTeamStaffAll] = useState<(TeamStaffRow & { team_id: string })[]>([]);
   const [meStaffId, setMeStaffId] = useState<string | null>(null);
   const [invitesParMatch, setInvitesParMatch] = useState<Record<string, string[]>>({});
+  const [idsChevaliers, setIdsChevaliers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const recharger = useCallback(async () => {
@@ -33,7 +34,7 @@ export function useDonneesEquipe(teamId: string | null) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }, { data: guestRows }] =
+    const [{ data: venuesRows }, { data: gamesRows }, { data: tournamentsRows }, { data: staffRows }, { data: teamStaffRows }, { data: meRow }, { data: guestRows }, { data: chevRows }] =
       await Promise.all([
         supabase.from("venues").select("*"),
         supabase.from("games").select("*, claims(*)").eq("team_id", teamId),
@@ -45,7 +46,10 @@ export function useDonneesEquipe(teamId: string | null) {
           : Promise.resolve({ data: null }),
         // Table ajoutée après coup : une erreur (pas encore créée) = aucun invité.
         supabase.from("game_guests").select("game_id, staff_id").eq("team_id", teamId),
+        // Personnes rattachées à au moins une équipe Chevaliers (banque d'invités).
+        supabase.from("team_staff").select("staff_id, teams!inner(organisation)").eq("teams.organisation", "Chevaliers"),
       ]);
+    setIdsChevaliers([...new Set((chevRows ?? []).map((r) => r.staff_id as string))]);
     setMeStaffId(meRow?.id ?? null);
     const inv: Record<string, string[]> = {};
     for (const gu of guestRows ?? []) (inv[gu.game_id] ??= []).push(gu.staff_id);
@@ -164,7 +168,7 @@ export function useDonneesEquipe(teamId: string | null) {
   }
 
   return {
-    venues, games, tournaments, staffAll, teamStaff, invitesParMatch, loading,
+    venues, games, tournaments, staffAll, teamStaff, invitesParMatch, idsChevaliers, loading,
     recharger, ajouterInvite, retirerInvite, sauverClaimMatch, effacerClaimMatch, sauverClaimTournoi,
   };
 }
